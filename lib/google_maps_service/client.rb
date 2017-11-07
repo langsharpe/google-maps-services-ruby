@@ -8,6 +8,7 @@ require "google_maps_service/apis/directions"
 require "google_maps_service/apis/distance_matrix"
 require "google_maps_service/apis/elevation"
 require "google_maps_service/apis/geocoding"
+require "google_maps_service/apis/places"
 require "google_maps_service/apis/roads"
 require "google_maps_service/apis/time_zone"
 
@@ -25,6 +26,7 @@ module GoogleMapsService
     include GoogleMapsService::Apis::DistanceMatrix
     include GoogleMapsService::Apis::Elevation
     include GoogleMapsService::Apis::Geocoding
+    include GoogleMapsService::Apis::Places
     include GoogleMapsService::Apis::Roads
     include GoogleMapsService::Apis::TimeZone
 
