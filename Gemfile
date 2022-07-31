@@ -4,7 +4,6 @@ source 'https://rubygems.org'
 gemspec
 
 group :development do
-  gem 'bundler', '~> 1.6'
   gem 'rake', '~> 10.0'
   gem 'rspec', '~> 3.3'
   gem 'simplecov', '~> 0.10'
