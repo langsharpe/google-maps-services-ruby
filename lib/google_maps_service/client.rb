@@ -1,4 +1,4 @@
-require 'hurley'
+require 'faraday'
 require 'multi_json'
 require 'retriable'
 require 'thread'
@@ -56,9 +56,9 @@ module GoogleMapsService
 
     # Construct Google Maps Web Service API client.
     #
-    # This gem uses [Hurley](https://github.com/lostisland/hurley) as internal HTTP client.
-    # You can configure `Hurley::Client` through `request_options` and `ssl_options` parameters.
-    # You can also directly get the `Hurley::Client` object via {#client} method.
+    # This gem uses [Faraday](https://github.com/lostisland/faraday) as internal HTTP client.
+    # You can configure `Faraday::Client` through `request_options` and `ssl_options` parameters.
+    # You can also directly get the `Faraday::Client` object via {#client} method.
     #
     # @example Setup API keys
     #   gmaps = GoogleMapsService::Client.new(key: 'Add your key here')
@@ -77,8 +77,8 @@ module GoogleMapsService
     #   )
     #
     # @example Request behind proxy
-    #   request_options = Hurley::RequestOptions.new
-    #   request_options.proxy = Hurley::Url.parse 'http://user:password@proxy.example.com:3128'
+    #   request_options = Faraday::RequestOptions.new
+    #   request_options.proxy = Faraday::Url.parse 'http://user:password@proxy.example.com:3128'
     #
     #   gmaps = GoogleMapsService::Client.new(
     #       key: 'Add your key here',
@@ -86,12 +86,12 @@ module GoogleMapsService
     #   )
     #
     # @example Using Excon and Http Cache
-    #  require 'hurley-excon'       # https://github.com/lostisland/hurley-excon
-    #  require 'hurley/http_cache'  # https://github.com/plataformatec/hurley-http-cache
+    #  require 'Faraday-excon'       # https://github.com/lostisland/Faraday-excon
+    #  require 'Faraday/http_cache'  # https://github.com/plataformatec/Faraday-http-cache
     #
     #  gmaps = GoogleMapsService::Client.new(
     #      key: 'Add your key here',
-    #      connection: Hurley::HttpCache.new(HurleyExcon::Connection.new)
+    #      connection: Faraday::HttpCache.new(FaradayExcon::Connection.new)
     #  )
     #
     # @option options [String] :key Secret key for accessing Google Maps Web Service.
@@ -101,13 +101,13 @@ module GoogleMapsService
     # @option options [Integer] :retry_timeout Timeout across multiple retriable requests, in seconds.
     # @option options [Integer] :queries_per_second Number of queries per second permitted.
     #
-    # @option options [Hurley::RequestOptions] :request_options HTTP client request options.
-    #     See https://github.com/lostisland/hurley/blob/master/lib/hurley/options.rb.
-    # @option options [Hurley::SslOptions] :ssl_options HTTP client SSL options.
-    #     See https://github.com/lostisland/hurley/blob/master/lib/hurley/options.rb.
+    # @option options [Faraday::RequestOptions] :request_options HTTP client request options.
+    #     See https://github.com/lostisland/Faraday/blob/master/lib/Faraday/options.rb.
+    # @option options [Faraday::SslOptions] :ssl_options HTTP client SSL options.
+    #     See https://github.com/lostisland/Faraday/blob/master/lib/Faraday/options.rb.
     # @option options [Object] :connection HTTP client connection.
-    #     By default, the default Hurley's HTTP client connection (Net::Http) will be used.
-    #     See https://github.com/lostisland/hurley/blob/master/README.md#connections.
+    #     By default, the default Faraday's HTTP client connection (Net::Http) will be used.
+    #     See https://github.com/lostisland/Faraday/blob/master/README.md#connections.
     def initialize(**options)
       [:key, :client_id, :client_secret,
           :retry_timeout, :queries_per_second,
@@ -119,7 +119,7 @@ module GoogleMapsService
     end
 
     # Get the current HTTP client.
-    # @return [Hurley::Client]
+    # @return [Faraday::Client]
     def client
       @client ||= new_client
     end
@@ -137,10 +137,10 @@ module GoogleMapsService
     end
 
     # Create a new HTTP client.
-    # @return [Hurley::Client]
+    # @return [Faraday::Client]
     def new_client
-      client = Hurley::Client.new
-      client.request_options.query_class = Hurley::Query::Flat
+      client = Faraday::Client.new
+      client.request_options.query_class = Faraday::Query::Flat
       client.request_options.redirection_limit = 0
       client.header[:user_agent] = user_agent
 
@@ -237,7 +237,7 @@ module GoogleMapsService
 
     # Extract and parse body response as hash. Throw an error if there is something wrong with the response.
     #
-    # @param [Hurley::Response] response Web API response.
+    # @param [Faraday::Response] response Web API response.
     #
     # @return [Hash] Response body as hash. The hash key will be symbolized.
     def decode_response_body(response)
@@ -249,7 +249,7 @@ module GoogleMapsService
 
     # Check HTTP response status code. Raise error if the status is not 2xx.
     #
-    # @param [Hurley::Response] response Web API response.
+    # @param [Faraday::Response] response Web API response.
     def check_response_status_code(response)
       case response.status_code
       when 200..300
@@ -267,7 +267,7 @@ module GoogleMapsService
 
     # Check response body for error status.
     #
-    # @param [Hurley::Response] response Response object.
+    # @param [Faraday::Response] response Response object.
     # @param [Hash] body Response body.
     #
     # @return [void]

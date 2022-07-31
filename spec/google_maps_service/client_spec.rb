@@ -178,11 +178,11 @@ EOF
     context 'with connection failed' do
       before(:example) do
         stub_request(:get, /https:\/\/maps.googleapis.com\/maps\/api\/geocode\/.*/)
-          .to_raise(Hurley::ConnectionFailed)
+          .to_raise(Faraday::ConnectionFailed)
       end
 
-      it 'should raise Hurley::ConnectionFailed' do
-        expect { client.geocode(address: 'Sydney') }.to raise_error Hurley::ConnectionFailed
+      it 'should raise Faraday::ConnectionFailed' do
+        expect { client.geocode(address: 'Sydney') }.to raise_error Faraday::ConnectionFailed
       end
     end
   end

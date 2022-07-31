@@ -29,12 +29,12 @@ module GoogleMapsService
 
     # Global request_options.
     # @see Client#initialize-instance_method
-    # @return [Hurley::RequestOptions]
+    # @return [Faraday::RequestOptions]
     attr_accessor :request_options
 
     # Global ssl_options.
     # @see Client#initialize-instance_method
-    # @return [Hurley::SslOptions]
+    # @return [Faraday::SslOptions]
     attr_accessor :ssl_options
 
     # Global connection.
