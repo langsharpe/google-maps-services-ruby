@@ -22,7 +22,7 @@ describe GoogleMapsService::Client do
     it 'should take between 1-2 seconds' do
       start_time = Time.now
       total_request.times do
-        client.geocode(address: "Sesame St.")
+        client.geocode("Sesame St.")
       end
       end_time = Time.now
       expect(end_time - start_time).to be_between(1, 2).inclusive

@@ -139,7 +139,7 @@ module GoogleMapsService
     # Create a new HTTP client.
     # @return [Faraday::Client]
     def new_client
-      client = Faraday::Client.new
+      client = Faraday.new
       client.request_options.query_class = Faraday::Query::Flat
       client.request_options.redirection_limit = 0
       client.header[:user_agent] = user_agent
