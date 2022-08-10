@@ -3,51 +3,6 @@ require 'spec_helper'
 describe GoogleMapsService::Client do
   include_context 'HTTP client'
 
-  # This test assumes that the time to run a mocked query is
-  # relatively small, eg a few milliseconds. We define a rate of
-  # 3 queries per second, and run double that, which should take at
-  # least 1 second but no more than 2.
-  context 'with total request is double of queries per second' do
-    let(:queries_per_second) { 3 }
-    let(:total_request) { queries_per_second * 2 }
-    let(:client)  do
-      GoogleMapsService::Client.new(key: api_key, queries_per_second: queries_per_second)
-    end
-
-    before(:example) do
-      stub_request(:get, /https:\/\/maps.googleapis.com\/maps\/api\/.*/).
-        to_return(:status => 200, headers: { 'Content-Type' => 'application/json' }, :body => '{"status":"OK","results":[]}')
-    end
-
-    it 'should take between 1-2 seconds' do
-      start_time = Time.now
-      total_request.times do
-        client.geocode(address: "Sesame St.")
-      end
-      end_time = Time.now
-      expect(end_time - start_time).to be_between(1, 2).inclusive
-    end
-  end
-
-  context 'with global parameters' do
-    before(:example) do
-      GoogleMapsService.configure do |config|
-        config.key = 'AIZaGLOBAL'
-      end
-    end
-
-    it 'should take global parameters' do
-      client = GoogleMapsService::Client.new
-      expect(client.key).to eq('AIZaGLOBAL')
-    end
-
-    after(:example) do
-      GoogleMapsService.configure do |config|
-        config.key = nil
-      end
-    end
-  end
-
   context 'with client id and secret' do
     let(:client) do
       client = GoogleMapsService::Client.new(client_id: 'foo', client_secret: 'a2V5')
@@ -61,6 +16,25 @@ describe GoogleMapsService::Client do
     it 'should be signed' do
       client.geocode('Sesame St.')
       expect(a_request(:get, 'https://maps.googleapis.com/maps/api/geocode/json?address=Sesame+St.&client=foo&signature=fxbWUIcNPZSekVOhp2ul9LW5TpY=')).to have_been_made
+    end
+  end
+  
+  context 'with global parameters' do
+    before(:example) do
+      GoogleMapsService.configure do |config|
+        config.key = 'AIZaGLOBAL'
+      end
+    end
+  
+    it 'should take global parameters' do
+      client = GoogleMapsService::Client.new
+      expect(client.key).to eq('AIZaGLOBAL')
+    end
+  
+    after(:example) do
+      GoogleMapsService.configure do |config|
+        config.key = nil
+      end
     end
   end
 
@@ -184,6 +158,32 @@ EOF
       it 'should raise Hurley::ConnectionFailed' do
         expect { client.geocode(address: 'Sydney') }.to raise_error Hurley::ConnectionFailed
       end
+    end
+  end
+  
+  # This test assumes that the time to run a mocked query is
+  # relatively small, eg a few milliseconds. We define a rate of
+  # 3 queries per second, and run double that, which should take at
+  # least 1 second but no more than 2.
+  context 'with total request is double of queries per second' do
+    let(:queries_per_second) { 3 }
+    let(:total_request) { queries_per_second * 2 }
+    let(:client)  do
+      GoogleMapsService::Client.new(key: api_key, queries_per_second: queries_per_second)
+    end
+  
+    before(:example) do
+      stub_request(:get, /https:\/\/maps.googleapis.com\/maps\/api\/.*/).
+        to_return(:status => 200, headers: { 'Content-Type' => 'application/json' }, :body => '{"status":"OK","results":[]}')
+    end
+  
+    it 'should take between 1-2 seconds' do
+      start_time = Time.now
+      total_request.times do
+        client.geocode(address: "Sesame St.")
+      end
+      end_time = Time.now
+      expect(end_time - start_time).to be_between(1, 2).inclusive
     end
   end
 end
