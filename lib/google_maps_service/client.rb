@@ -1,4 +1,3 @@
-require 'hurley'
 require 'multi_json'
 require 'retriable'
 require 'thread'
@@ -119,9 +118,9 @@ module GoogleMapsService
     end
 
     # Get the current HTTP client.
-    # @return [Hurley::Client]
+    # @deprecated
     def client
-      @client ||= new_client
+      raise NotImplementedError("GoogleMapsService::Client.client is no longer implemented.")
     end
 
     protected
@@ -137,18 +136,19 @@ module GoogleMapsService
     end
 
     # Create a new HTTP client.
-    # @return [Hurley::Client]
+    # @deprecated
     def new_client
-      client = Hurley::Client.new
-      client.request_options.query_class = Hurley::Query::Flat
-      client.request_options.redirection_limit = 0
-      client.header[:user_agent] = user_agent
+      raise NotImplementedError("GoogleMapsService::Client.new_client is no longer implemented.")
+#       client = Hurley::Client.new
+#       client.request_options.query_class = Hurley::Query::Flat
+#       client.request_options.redirection_limit = 0
+#       client.header[:user_agent] = user_agent
+# 
+#       client.connection = @connection if @connection
+#       @request_options.each_pair {|key, value| client.request_options[key] = value } if @request_options
+#       @ssl_options.each_pair {|key, value| client.ssl_options[key] = value } if @ssl_options
 
-      client.connection = @connection if @connection
-      @request_options.each_pair {|key, value| client.request_options[key] = value } if @request_options
-      @ssl_options.each_pair {|key, value| client.ssl_options[key] = value } if @ssl_options
-
-      client
+      # client
     end
 
     # Build the user agent header
@@ -169,12 +169,12 @@ module GoogleMapsService
     #
     # @return [Object] Decoded response body.
     def get(path, params, base_url: DEFAULT_BASE_URL, accepts_client_id: true, custom_response_decoder: nil)
-      url = base_url + generate_auth_url(path, params, accepts_client_id)
+      url = URI(base_url + generate_auth_url(path, params, accepts_client_id))
 
       Retriable.retriable timeout: @retry_timeout, on: RETRIABLE_ERRORS do |try|
         begin
           request_query_ticket
-          response = client.get url
+          response = Net::HTTP.get_response(url)
         ensure
           release_query_ticket
         end
@@ -251,7 +251,7 @@ module GoogleMapsService
     #
     # @param [Hurley::Response] response Web API response.
     def check_response_status_code(response)
-      case response.status_code
+      case response.code
       when 200..300
         # Do-nothing
       when 301, 302, 303, 307

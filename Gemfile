@@ -8,7 +8,7 @@ group :development do
   gem 'rspec', '~> 3.3'
   gem 'simplecov', '~> 0.10'
   gem 'coveralls', '~> 0.8.2'
-  gem 'webmock', '~> 1.21'
+  gem 'webmock', '~> 3.18.1'
 end
 
 platforms :ruby do
