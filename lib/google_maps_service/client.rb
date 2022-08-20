@@ -251,7 +251,7 @@ module GoogleMapsService
     #
     # @param [Hurley::Response] response Web API response.
     def check_response_status_code(response)
-      case response.code
+      case response.code.to_i
       when 200..300
         # Do-nothing
       when 301, 302, 303, 307
