@@ -156,7 +156,7 @@ EOF
       end
       
       it 'should raise SocketError' do
-        expect { client.geocode(address: 'Sydney') }.to raise_error SocketError
+        expect { client.geocode('Sydney') }.to raise_error SocketError
       end
     end
   end
@@ -180,7 +180,7 @@ EOF
     it 'should take between 1-2 seconds' do
       start_time = Time.now
       total_request.times do
-        client.geocode(address: "Sesame St.")
+        client.geocode("Sesame St.")
       end
       end_time = Time.now
       expect(end_time - start_time).to be_between(1, 2).inclusive
