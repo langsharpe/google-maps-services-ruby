@@ -55,10 +55,6 @@ module GoogleMapsService
 
     # Construct Google Maps Web Service API client.
     #
-    # This gem uses [Hurley](https://github.com/lostisland/hurley) as internal HTTP client.
-    # You can configure `Hurley::Client` through `request_options` and `ssl_options` parameters.
-    # You can also directly get the `Hurley::Client` object via {#client} method.
-    #
     # @example Setup API keys
     #   gmaps = GoogleMapsService::Client.new(key: 'Add your key here')
     #
@@ -75,43 +71,21 @@ module GoogleMapsService
     #       queries_per_second: 10
     #   )
     #
-    # @example Request behind proxy
-    #   request_options = Hurley::RequestOptions.new
-    #   request_options.proxy = Hurley::Url.parse 'http://user:password@proxy.example.com:3128'
-    #
-    #   gmaps = GoogleMapsService::Client.new(
-    #       key: 'Add your key here',
-    #       request_options: request_options
-    #   )
-    #
-    # @example Using Excon and Http Cache
-    #  require 'hurley-excon'       # https://github.com/lostisland/hurley-excon
-    #  require 'hurley/http_cache'  # https://github.com/plataformatec/hurley-http-cache
-    #
-    #  gmaps = GoogleMapsService::Client.new(
-    #      key: 'Add your key here',
-    #      connection: Hurley::HttpCache.new(HurleyExcon::Connection.new)
-    #  )
-    #
     # @option options [String] :key Secret key for accessing Google Maps Web Service.
     #   Can be obtained at https://developers.google.com/maps/documentation/geocoding/get-api-key#key.
     # @option options [String] :client_id Client id for using Maps API for Work services.
     # @option options [String] :client_secret Client secret for using Maps API for Work services.
     # @option options [Integer] :retry_timeout Timeout across multiple retriable requests, in seconds.
     # @option options [Integer] :queries_per_second Number of queries per second permitted.
-    #
-    # @option options [Hurley::RequestOptions] :request_options HTTP client request options.
-    #     See https://github.com/lostisland/hurley/blob/master/lib/hurley/options.rb.
-    # @option options [Hurley::SslOptions] :ssl_options HTTP client SSL options.
-    #     See https://github.com/lostisland/hurley/blob/master/lib/hurley/options.rb.
-    # @option options [Object] :connection HTTP client connection.
-    #     By default, the default Hurley's HTTP client connection (Net::Http) will be used.
-    #     See https://github.com/lostisland/hurley/blob/master/README.md#connections.
     def initialize(**options)
       [:key, :client_id, :client_secret,
-          :retry_timeout, :queries_per_second,
-          :request_options, :ssl_options, :connection].each do |key|
+          :retry_timeout, :queries_per_second].each do |key|
         self.instance_variable_set("@#{key}".to_sym, options[key] || GoogleMapsService.instance_variable_get("@#{key}"))
+      end
+      [:request_options, :ssl_options, :connection].each do |key|
+        if options.has_key?(key)
+          raise "GoogleMapsService::Client.new no longer supports #{key}."
+        end
       end
 
       initialize_query_tickets
@@ -120,7 +94,7 @@ module GoogleMapsService
     # Get the current HTTP client.
     # @deprecated
     def client
-      raise NotImplementedError("GoogleMapsService::Client.client is no longer implemented.")
+      raise "GoogleMapsService::Client.client is no longer implemented."
     end
 
     protected
@@ -139,16 +113,6 @@ module GoogleMapsService
     # @deprecated
     def new_client
       raise NotImplementedError("GoogleMapsService::Client.new_client is no longer implemented.")
-#       client = Hurley::Client.new
-#       client.request_options.query_class = Hurley::Query::Flat
-#       client.request_options.redirection_limit = 0
-#       client.header[:user_agent] = user_agent
-# 
-#       client.connection = @connection if @connection
-#       @request_options.each_pair {|key, value| client.request_options[key] = value } if @request_options
-#       @ssl_options.each_pair {|key, value| client.ssl_options[key] = value } if @ssl_options
-
-      # client
     end
 
     # Build the user agent header
@@ -237,7 +201,7 @@ module GoogleMapsService
 
     # Extract and parse body response as hash. Throw an error if there is something wrong with the response.
     #
-    # @param [Hurley::Response] response Web API response.
+    # @param [Net::HTTPResponse] response Web API response.
     #
     # @return [Hash] Response body as hash. The hash key will be symbolized.
     def decode_response_body(response)
@@ -249,7 +213,7 @@ module GoogleMapsService
 
     # Check HTTP response status code. Raise error if the status is not 2xx.
     #
-    # @param [Hurley::Response] response Web API response.
+    # @param [Net::HTTPResponse] response Web API response.
     def check_response_status_code(response)
       case response.code.to_i
       when 200..300
@@ -267,7 +231,7 @@ module GoogleMapsService
 
     # Check response body for error status.
     #
-    # @param [Hurley::Response] response Response object.
+    # @param [Net::HTTPResponse] response Response object.
     # @param [Hash] body Response body.
     #
     # @return [void]
