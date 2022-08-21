@@ -1,4 +1,5 @@
 require 'multi_json'
+require 'net/http'
 require 'retriable'
 require 'thread'
 
