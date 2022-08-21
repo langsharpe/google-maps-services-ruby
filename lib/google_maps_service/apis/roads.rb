@@ -146,7 +146,7 @@ module GoogleMapsService::Apis
         begin
           body = MultiJson.load(response.body, :symbolize_keys => true)
         rescue
-          unless response.status_code == 200
+          unless response.code == "200"
             check_response_status_code(response)
           end
           raise GoogleMapsService::Error::ApiError.new(response), 'Received a malformed response.'
@@ -154,7 +154,7 @@ module GoogleMapsService::Apis
 
         check_roads_body_error(response, body)
 
-        unless response.status_code == 200
+        unless response.code == "200"
           raise GoogleMapsService::Error::ApiError.new(response)
         end
         return body
@@ -162,7 +162,7 @@ module GoogleMapsService::Apis
 
       # Check response body for error status.
       #
-      # @param [Hurley::Response] response Response object.
+      # @param [Net::HTTPResponse] response Response object.
       # @param [Hash] body Response body.
       def check_roads_body_error(response, body)
         error = body[:error]

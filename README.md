@@ -50,7 +50,7 @@ This gem return a Ruby Hash/Array object as the API result. The result format st
 
 ## Requirements
 
- - Ruby 2.0 or later.
+ - Ruby 2.7 or later.
  - A Google Maps API credentials (API keys or client IDs)
 
 ### Obtain API keys
@@ -62,8 +62,9 @@ To generate a server key for your project:
  1. Visit https://developers.google.com/console and log in with
     a Google Account.
  1. Select an existing project, or create a new project.
- 1. Click **Enable an API**.
- 1. Browse for the API, and set its status to "On". The Python Client for Google Maps Services
+ 1. Select APIs and Services > Enables APIs and services.
+ 1. Click Enable APIs and services
+ 1. Browse for the API, and set its status to "On". The Ruby Client for Google Maps Services
     accesses the following APIs:
     * Directions API
     * Distance Matrix API
