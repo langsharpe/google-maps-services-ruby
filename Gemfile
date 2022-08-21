@@ -4,17 +4,17 @@ source 'https://rubygems.org'
 gemspec
 
 group :development do
-  gem 'rake', '~> 10.0'
-  gem 'rspec', '~> 3.3'
-  gem 'simplecov', '~> 0.10'
-  gem 'coveralls', '~> 0.8.2'
+  gem 'rake', '~> 13.0'
+  gem 'rspec', '~> 3.11'
+  gem 'simplecov', '~> 0.16.1'
+  gem 'coveralls', '~> 0.8.23'
   gem 'webmock', '~> 3.18.1'
 end
 
 platforms :ruby do
   group :development do
-    gem 'yard', '~> 0.8'
-    gem 'redcarpet', '~> 3.2'
+    gem 'yard', '~> 0.9.28'
+    gem 'redcarpet', '~> 3.5.1'
   end
 end
 
