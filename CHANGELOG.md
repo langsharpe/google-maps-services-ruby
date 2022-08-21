@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.5.0.b1
+
+* Support for Ruby <= 2.6 dropped
+* Client implementation changed from Hurley to Net::HTTP. This has caused the following breaking changes:
+    * request_options, ssl_options and connection can no longer be set
+    * client object is no longer accessible
+    * Hurley exceptions are no longer raised for connection issues
+
 ## 0.4.2
 
 * Add nearest roads Google Roads API support
