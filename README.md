@@ -1,6 +1,6 @@
 # Ruby gem for Google Maps APIs
 
-[![Build Status](https://travis-ci.org/langsharpe/google-maps-services-ruby.svg?branch=master)](https://travis-ci.org/langsharpe/google-maps-services-ruby) [![Coverage Status](https://coveralls.io/repos/langsharpe/google-maps-services-ruby/badge.svg?branch=master&service=github)](https://coveralls.io/github/langsharpe/google-maps-services-ruby?branch=master)
+[![Build Status](https://app.travis-ci.com/langsharpe/google-maps-services-ruby.svg?branch=master)](https://app.travis-ci.com/langsharpe/google-maps-services-ruby) [![Coverage Status](https://coveralls.io/repos/github/langsharpe/google-maps-services-ruby/badge.svg?branch=master)](https://coveralls.io/github/langsharpe/google-maps-services-ruby?branch=master)
 
 *This gem is ported from [Python Client for Google Maps Services](https://github.com/googlemaps/google-maps-services-python).*
 
