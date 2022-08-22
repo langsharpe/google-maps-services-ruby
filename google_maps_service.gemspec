@@ -17,6 +17,6 @@ Gem::Specification.new do |spec|
   spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
   spec.require_paths = ['lib']
 
-  spec.add_runtime_dependency 'multi_json', '~> 1.11'
-  spec.add_runtime_dependency 'retriable', '~> 2.0'
+  spec.add_runtime_dependency 'multi_json', '~> 1.15'
+  spec.add_runtime_dependency 'retriable', '~> 3.1'
 end
