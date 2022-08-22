@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.5.0.b2
+
+* Update retriable gem dependency to latest version
+
 ## 0.5.0.b1
 
 * Support for Ruby <= 2.6 dropped
