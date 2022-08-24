@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+* Replace Travis CI with Github Actions.
+
 ## 0.5.0 - 2022-08-24
 
 * No changes.
