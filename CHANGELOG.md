@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.5.0 - 2022-08-24
+
+* No changes.
+
 ## 0.5.0.b2
 
 * Update retriable gem dependency to latest version
