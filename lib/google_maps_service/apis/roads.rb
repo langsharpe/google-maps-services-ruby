@@ -1,10 +1,8 @@
-require 'multi_json'
+require "multi_json"
 
 module GoogleMapsService::Apis
-
   # Performs requests to the Google Maps Roads API.
   module Roads
-
     # Base URL of Google Maps Roads API
     ROADS_BASE_URL = "https://roads.googleapis.com"
 
@@ -42,12 +40,12 @@ module GoogleMapsService::Apis
         path: path
       }
 
-      params[:interpolate] = 'true' if interpolate
+      params[:interpolate] = "true" if interpolate
 
-      return get('/v1/snapToRoads', params,
-                 base_url: ROADS_BASE_URL,
-                 accepts_client_id: false,
-                 custom_response_decoder: method(:extract_roads_body))[:snappedPoints]
+      get("/v1/snapToRoads", params,
+        base_url: ROADS_BASE_URL,
+        accepts_client_id: false,
+        custom_response_decoder: method(:extract_roads_body))[:snappedPoints]
     end
 
     # Returns the posted speed limit (in km/h) for given road segments.
@@ -64,12 +62,12 @@ module GoogleMapsService::Apis
     #
     # @return [Array] Array of speed limits.
     def speed_limits(place_ids)
-      params = GoogleMapsService::Convert.as_list(place_ids).map { |place_id| ['placeId', place_id] }
+      params = GoogleMapsService::Convert.as_list(place_ids).map { |place_id| ["placeId", place_id] }
 
-      return get('/v1/speedLimits', params,
-                 base_url: ROADS_BASE_URL,
-                 accepts_client_id: false,
-                 custom_response_decoder: method(:extract_roads_body))[:speedLimits]
+      get("/v1/speedLimits", params,
+        base_url: ROADS_BASE_URL,
+        accepts_client_id: false,
+        custom_response_decoder: method(:extract_roads_body))[:speedLimits]
     end
 
     # Returns the posted speed limit (in km/h) for given road segments.
@@ -98,10 +96,10 @@ module GoogleMapsService::Apis
         path: path
       }
 
-      return get('/v1/speedLimits', params,
-                 base_url: ROADS_BASE_URL,
-                 accepts_client_id: false,
-                 custom_response_decoder: method(:extract_roads_body))
+      get("/v1/speedLimits", params,
+        base_url: ROADS_BASE_URL,
+        accepts_client_id: false,
+        custom_response_decoder: method(:extract_roads_body))
     end
 
     # Returns the nearest road segments for provided points.
@@ -132,56 +130,54 @@ module GoogleMapsService::Apis
         points: points
       }
 
-      return get('/v1/nearestRoads', params,
-                 base_url: ROADS_BASE_URL,
-                 accepts_client_id: false,
-                 custom_response_decoder: method(:extract_roads_body))[:snappedPoints]
+      get("/v1/nearestRoads", params,
+        base_url: ROADS_BASE_URL,
+        accepts_client_id: false,
+        custom_response_decoder: method(:extract_roads_body))[:snappedPoints]
     end
 
-
-
     private
-      # Extracts a result from a Roads API HTTP response.
-      def extract_roads_body(response)
-        begin
-          body = MultiJson.load(response.body, :symbolize_keys => true)
-        rescue
-          unless response.code == "200"
-            check_response_status_code(response)
-          end
-          raise GoogleMapsService::Error::ApiError.new(response), 'Received a malformed response.'
-        end
 
-        check_roads_body_error(response, body)
-
+    # Extracts a result from a Roads API HTTP response.
+    def extract_roads_body(response)
+      begin
+        body = MultiJson.load(response.body, symbolize_keys: true)
+      rescue
         unless response.code == "200"
-          raise GoogleMapsService::Error::ApiError.new(response)
+          check_response_status_code(response)
         end
-        return body
+        raise GoogleMapsService::Error::ApiError.new(response), "Received a malformed response."
       end
 
-      # Check response body for error status.
-      #
-      # @param [Net::HTTPResponse] response Response object.
-      # @param [Hash] body Response body.
-      def check_roads_body_error(response, body)
-        error = body[:error]
-        return unless error
+      check_roads_body_error(response, body)
 
-        case error[:status]
-          when 'INVALID_ARGUMENT'
-            if error[:message] == 'The provided API key is invalid.'
-              raise GoogleMapsService::Error::RequestDeniedError.new(response), error[:message]
-            end
-            raise GoogleMapsService::Error::InvalidRequestError.new(response), error[:message]
-          when 'PERMISSION_DENIED'
-            raise GoogleMapsService::Error::RequestDeniedError.new(response), error[:message]
-          when 'RESOURCE_EXHAUSTED'
-            raise GoogleMapsService::Error::RateLimitError.new(response), error[:message]
-          else
-            raise GoogleMapsService::Error::ApiError.new(response), error[:message]
-        end
+      unless response.code == "200"
+        raise GoogleMapsService::Error::ApiError.new(response)
       end
+      body
+    end
 
+    # Check response body for error status.
+    #
+    # @param [Net::HTTPResponse] response Response object.
+    # @param [Hash] body Response body.
+    def check_roads_body_error(response, body)
+      error = body[:error]
+      return unless error
+
+      case error[:status]
+      when "INVALID_ARGUMENT"
+        if error[:message] == "The provided API key is invalid."
+          raise GoogleMapsService::Error::RequestDeniedError.new(response), error[:message]
+        end
+        raise GoogleMapsService::Error::InvalidRequestError.new(response), error[:message]
+      when "PERMISSION_DENIED"
+        raise GoogleMapsService::Error::RequestDeniedError.new(response), error[:message]
+      when "RESOURCE_EXHAUSTED"
+        raise GoogleMapsService::Error::RateLimitError.new(response), error[:message]
+      else
+        raise GoogleMapsService::Error::ApiError.new(response), error[:message]
+      end
+    end
   end
 end

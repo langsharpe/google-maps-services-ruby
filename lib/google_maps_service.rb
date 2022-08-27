@@ -1,7 +1,6 @@
 # Google Maps Web Service API.
 module GoogleMapsService
   class << self
-
     # Global key.
     # @see Client#key
     # @return [String]
@@ -35,7 +34,7 @@ module GoogleMapsService
     end
   end
 
-  require 'google_maps_service/version'
-  require 'google_maps_service/client'
-  require 'google_maps_service/polyline'
+  require "google_maps_service/version"
+  require "google_maps_service/client"
+  require "google_maps_service/polyline"
 end

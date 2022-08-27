@@ -1,25 +1,22 @@
-require 'multi_json'
-require 'net/http'
-require 'retriable'
-require 'thread'
-
-require 'google_maps_service/errors'
-require 'google_maps_service/convert'
-require 'google_maps_service/url'
-require 'google_maps_service/apis/directions'
-require 'google_maps_service/apis/distance_matrix'
-require 'google_maps_service/apis/elevation'
-require 'google_maps_service/apis/geocoding'
-require 'google_maps_service/apis/roads'
-require 'google_maps_service/apis/time_zone'
+require "multi_json"
+require "net/http"
+require "retriable"
+require "google_maps_service/errors"
+require "google_maps_service/convert"
+require "google_maps_service/url"
+require "google_maps_service/apis/directions"
+require "google_maps_service/apis/distance_matrix"
+require "google_maps_service/apis/elevation"
+require "google_maps_service/apis/geocoding"
+require "google_maps_service/apis/roads"
+require "google_maps_service/apis/time_zone"
 
 module GoogleMapsService
-
   # Core client functionality, common across all API requests (including performing
   # HTTP requests).
   class Client
     # Default Google Maps Web Service base endpoints
-    DEFAULT_BASE_URL = 'https://maps.googleapis.com'
+    DEFAULT_BASE_URL = "https://maps.googleapis.com"
 
     # Errors those could be retriable.
     RETRIABLE_ERRORS = [GoogleMapsService::Error::ServerError, GoogleMapsService::Error::RateLimitError]
@@ -80,8 +77,8 @@ module GoogleMapsService
     # @option options [Integer] :queries_per_second Number of queries per second permitted.
     def initialize(**options)
       [:key, :client_id, :client_secret,
-          :retry_timeout, :queries_per_second].each do |key|
-        self.instance_variable_set("@#{key}".to_sym, options[key] || GoogleMapsService.instance_variable_get("@#{key}"))
+        :retry_timeout, :queries_per_second].each do |key|
+        instance_variable_set("@#{key}".to_sym, options[key] || GoogleMapsService.instance_variable_get("@#{key}"))
       end
       [:request_options, :ssl_options, :connection].each do |key|
         if options.has_key?(key)
@@ -119,9 +116,9 @@ module GoogleMapsService
     # Build the user agent header
     # @return [String]
     def user_agent
-      @user_agent ||= sprintf('google-maps-services-ruby/%s %s',
-              GoogleMapsService::VERSION,
-              GoogleMapsService::OS_VERSION)
+      @user_agent ||= sprintf("google-maps-services-ruby/%s %s",
+        GoogleMapsService::VERSION,
+        GoogleMapsService::OS_VERSION)
     end
 
     # Make API call.
@@ -141,7 +138,7 @@ module GoogleMapsService
           request_query_ticket
           request = Net::HTTP::Get.new(url)
           request["User-Agent"] = user_agent
-          response = Net::HTTP.start(url.hostname, url.port, use_ssl: url.scheme == 'https') do |http|
+          response = Net::HTTP.start(url.hostname, url.port, use_ssl: url.scheme == "https") do |http|
             http.request(request)
           end
         ensure
@@ -182,13 +179,13 @@ module GoogleMapsService
     def generate_auth_url(path, params, accepts_client_id)
       # Deterministic ordering through sorting by key.
       # Useful for tests, and in the future, any caching.
-      if params.kind_of?(Hash)
-        params = params.sort
+      params = if params.is_a?(Hash)
+        params.sort
       else
-        params = params.dup
+        params.dup
       end
 
-      if accepts_client_id and @client_id and @client_secret
+      if accepts_client_id && @client_id && @client_secret
         params << ["client", @client_id]
 
         path = [path, GoogleMapsService::Url.urlencode_params(params)].join("?")
@@ -211,7 +208,7 @@ module GoogleMapsService
     # @return [Hash] Response body as hash. The hash key will be symbolized.
     def decode_response_body(response)
       check_response_status_code(response)
-      body = MultiJson.load(response.body, :symbolize_keys => true)
+      body = MultiJson.load(response.body, symbolize_keys: true)
       check_body_error(response, body)
       body
     end
@@ -224,13 +221,13 @@ module GoogleMapsService
       when 200..300
         # Do-nothing
       when 301, 302, 303, 307
-        raise GoogleMapsService::Error::RedirectError.new(response), sprintf('Redirect to %s', response.header[:location])
+        raise GoogleMapsService::Error::RedirectError.new(response), sprintf("Redirect to %s", response.header[:location])
       when 401
-        raise GoogleMapsService::Error::ClientError.new(response), 'Unauthorized'
+        raise GoogleMapsService::Error::ClientError.new(response), "Unauthorized"
       when 304, 400, 402...500
-        raise GoogleMapsService::Error::ClientError.new(response), 'Invalid request'
+        raise GoogleMapsService::Error::ClientError.new(response), "Invalid request"
       when 500..600
-        raise GoogleMapsService::Error::ServerError.new(response), 'Server error'
+        raise GoogleMapsService::Error::ServerError.new(response), "Server error"
       end
     end
 
@@ -242,13 +239,13 @@ module GoogleMapsService
     # @return [void]
     def check_body_error(response, body)
       case body[:status]
-      when 'OK', 'ZERO_RESULTS'
+      when "OK", "ZERO_RESULTS"
         # Do-nothing
-      when 'OVER_QUERY_LIMIT'
+      when "OVER_QUERY_LIMIT"
         raise GoogleMapsService::Error::RateLimitError.new(response), body[:error_message]
-      when 'REQUEST_DENIED'
+      when "REQUEST_DENIED"
         raise GoogleMapsService::Error::RequestDeniedError.new(response), body[:error_message]
-      when 'INVALID_REQUEST'
+      when "INVALID_REQUEST"
         raise GoogleMapsService::Error::InvalidRequestError.new(response), body[:error_message]
       else
         raise GoogleMapsService::Error::ApiError.new(response), body[:error_message]

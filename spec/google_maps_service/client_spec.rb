@@ -1,42 +1,42 @@
-require 'spec_helper'
+require "spec_helper"
 
 describe GoogleMapsService::Client do
-  include_context 'HTTP client'
+  include_context "HTTP client"
 
-  context 'with client id and secret' do
+  context "with client id and secret" do
     let(:client) do
-      client = GoogleMapsService::Client.new(client_id: 'foo', client_secret: 'a2V5')
+      GoogleMapsService::Client.new(client_id: "foo", client_secret: "a2V5")
     end
 
     before(:example) do
-      stub_request(:get, /https:\/\/maps.googleapis.com\/maps\/api\/.*/).
-        to_return(:status => 200, headers: { 'Content-Type' => 'application/json' }, :body => '{"status":"OK","results":[]}')
+      stub_request(:get, /https:\/\/maps.googleapis.com\/maps\/api\/.*/)
+        .to_return(status: 200, headers: {"Content-Type" => "application/json"}, body: '{"status":"OK","results":[]}')
     end
 
-    it 'should be signed' do
-      client.geocode('Sesame St.')
-      expect(a_request(:get, 'https://maps.googleapis.com/maps/api/geocode/json?address=Sesame+St.&client=foo&signature=fxbWUIcNPZSekVOhp2ul9LW5TpY=')).to have_been_made
+    it "should be signed" do
+      client.geocode("Sesame St.")
+      expect(a_request(:get, "https://maps.googleapis.com/maps/api/geocode/json?address=Sesame+St.&client=foo&signature=fxbWUIcNPZSekVOhp2ul9LW5TpY=")).to have_been_made
     end
 
-    it 'should include user agent' do
-      client.geocode('Sesame St.')
+    it "should include user agent" do
+      client.geocode("Sesame St.")
       expect(
         a_request(:get, /https:\/\/maps.googleapis.com\/maps\/api\/.*/)
-        .with(headers: {'User-Agent' => /google-maps-services-ruby.*/})
+        .with(headers: {"User-Agent" => /google-maps-services-ruby.*/})
       ).to have_been_made
     end
   end
 
-  context 'with global parameters' do
+  context "with global parameters" do
     before(:example) do
       GoogleMapsService.configure do |config|
-        config.key = 'AIZaGLOBAL'
+        config.key = "AIZaGLOBAL"
       end
     end
 
-    it 'should take global parameters' do
+    it "should take global parameters" do
       client = GoogleMapsService::Client.new
-      expect(client.key).to eq('AIZaGLOBAL')
+      expect(client.key).to eq("AIZaGLOBAL")
     end
 
     after(:example) do
@@ -46,125 +46,125 @@ describe GoogleMapsService::Client do
     end
   end
 
-  context 'error handling' do
-    context 'without api key and client secret pair' do
-      it 'should raise ArgumentError' do
+  context "error handling" do
+    context "without api key and client secret pair" do
+      it "should raise ArgumentError" do
         client = GoogleMapsService::Client.new
         expect { client.directions("Sydney", "Melbourne") }.to raise_error ArgumentError
       end
     end
 
-    context 'with invalid api key' do
+    context "with invalid api key" do
       let(:client) do
-        client = GoogleMapsService::Client.new(key: "AIzaINVALID")
+        GoogleMapsService::Client.new(key: "AIzaINVALID")
       end
 
       before(:example) do
-        json = <<EOF
-{
-  "error_message": "The provided API key is invalid.",
-  "routes": [],
-  "status": "REQUEST_DENIED"
-}
-EOF
+        json = <<~EOF
+          {
+            "error_message": "The provided API key is invalid.",
+            "routes": [],
+            "status": "REQUEST_DENIED"
+          }
+        EOF
         stub_request(:get, /https:\/\/maps.googleapis.com\/maps\/api\/.*/)
-          .to_return(:status => 200, headers: { 'Content-Type' => 'application/json' }, body: json)
+          .to_return(status: 200, headers: {"Content-Type" => "application/json"}, body: json)
       end
 
-      it 'should raise GoogleMapsService::Error::RequestDeniedError' do
+      it "should raise GoogleMapsService::Error::RequestDeniedError" do
         expect { client.directions("Sydney", "Melbourne") }.to raise_error GoogleMapsService::Error::RequestDeniedError
       end
     end
 
-    context 'with over query limit' do
+    context "with over query limit" do
       before(:example) do
         stub_request(:get, /https:\/\/maps.googleapis.com\/maps\/api\/geocode\/.*/)
-          .to_return(:status => 200, headers: { 'Content-Type' => 'application/json' }, body: '{"status":"OVER_QUERY_LIMIT"}').then
-          .to_return(:status => 200, headers: { 'Content-Type' => 'application/json' }, body: '{"status":"OK","results":[]}')
+          .to_return(status: 200, headers: {"Content-Type" => "application/json"}, body: '{"status":"OVER_QUERY_LIMIT"}').then
+          .to_return(status: 200, headers: {"Content-Type" => "application/json"}, body: '{"status":"OK","results":[]}')
       end
 
-      it 'should make request twice' do
-        results = client.geocode('Sydney')
-        expect(a_request(:get, 'https://maps.googleapis.com/maps/api/geocode/json?key=%s&address=Sydney' % api_key)).to have_been_made.times(2)
+      it "should make request twice" do
+        client.geocode("Sydney")
+        expect(a_request(:get, "https://maps.googleapis.com/maps/api/geocode/json?key=%s&address=Sydney" % api_key)).to have_been_made.times(2)
       end
     end
 
-    context 'with unknown api error' do
+    context "with unknown api error" do
       before(:example) do
         stub_request(:get, /https:\/\/maps.googleapis.com\/maps\/api\/geocode\/.*/)
-          .to_return(:status => 200, headers: { 'Content-Type' => 'application/json' }, body: '{"status":"UNKNOWN_ERROR"}')
+          .to_return(status: 200, headers: {"Content-Type" => "application/json"}, body: '{"status":"UNKNOWN_ERROR"}')
       end
 
-      it 'should raise GoogleMapsService::Error::ApiError' do
-        expect { client.geocode('Sydney') }.to raise_error GoogleMapsService::Error::ApiError
+      it "should raise GoogleMapsService::Error::ApiError" do
+        expect { client.geocode("Sydney") }.to raise_error GoogleMapsService::Error::ApiError
       end
     end
 
-    context 'with server error and then success' do
+    context "with server error and then success" do
       before(:example) do
         stub_request(:get, /https:\/\/maps.googleapis.com\/maps\/api\/geocode\/.*/)
-          .to_return(:status => 500, body: 'Internal server error.').then
-          .to_return(:status => 200, headers: { 'Content-Type' => 'application/json' }, body: '{"status":"OK","results":[]}')
+          .to_return(status: 500, body: "Internal server error.").then
+          .to_return(status: 200, headers: {"Content-Type" => "application/json"}, body: '{"status":"OK","results":[]}')
       end
 
-      it 'should make request twice' do
-        results = client.geocode('Sydney')
-        expect(a_request(:get, 'https://maps.googleapis.com/maps/api/geocode/json?key=%s&address=Sydney' % api_key)).to have_been_made.times(2)
+      it "should make request twice" do
+        client.geocode("Sydney")
+        expect(a_request(:get, "https://maps.googleapis.com/maps/api/geocode/json?key=%s&address=Sydney" % api_key)).to have_been_made.times(2)
       end
     end
 
-    context 'with server error' do
+    context "with server error" do
       before(:example) do
         stub_request(:get, /https:\/\/maps.googleapis.com\/maps\/api\/geocode\/.*/)
-          .to_return(:status => 500, body: 'Internal server error.')
+          .to_return(status: 500, body: "Internal server error.")
       end
 
-      it 'should raise GoogleMapsService::Error::ServerError' do
-        expect { client.geocode('Sydney') }.to raise_error GoogleMapsService::Error::ServerError
+      it "should raise GoogleMapsService::Error::ServerError" do
+        expect { client.geocode("Sydney") }.to raise_error GoogleMapsService::Error::ServerError
       end
     end
 
-    context 'with unauthorized status code error' do
+    context "with unauthorized status code error" do
       before(:example) do
         stub_request(:get, /https:\/\/maps.googleapis.com\/maps\/api\/geocode\/.*/)
-          .to_return(:status => 401, body: 'Unauthorized.')
+          .to_return(status: 401, body: "Unauthorized.")
       end
 
-      it 'should raise GoogleMapsService::Error::ClientError' do
-        expect { client.geocode('Sydney') }.to raise_error GoogleMapsService::Error::ClientError
+      it "should raise GoogleMapsService::Error::ClientError" do
+        expect { client.geocode("Sydney") }.to raise_error GoogleMapsService::Error::ClientError
       end
     end
 
-    context 'with client error' do
+    context "with client error" do
       before(:example) do
         stub_request(:get, /https:\/\/maps.googleapis.com\/maps\/api\/geocode\/.*/)
-          .to_return(:status => 400, body: 'Bad request.')
+          .to_return(status: 400, body: "Bad request.")
       end
 
-      it 'should raise GoogleMapsService::Error::ClientError' do
-        expect { client.geocode('Sydney') }.to raise_error GoogleMapsService::Error::ClientError
+      it "should raise GoogleMapsService::Error::ClientError" do
+        expect { client.geocode("Sydney") }.to raise_error GoogleMapsService::Error::ClientError
       end
     end
 
-    context 'with redirect error' do
+    context "with redirect error" do
       before(:example) do
         stub_request(:get, /https:\/\/maps.googleapis.com\/maps\/api\/geocode\/.*/)
-          .to_return(:status => 301, headers: { 'location' => 'https://maps2.googleapis.com' } )
+          .to_return(status: 301, headers: {"location" => "https://maps2.googleapis.com"})
       end
 
-      it 'should raise GoogleMapsService::Error::RedirectError' do
-        expect { client.geocode('Sydney') }.to raise_error GoogleMapsService::Error::RedirectError
+      it "should raise GoogleMapsService::Error::RedirectError" do
+        expect { client.geocode("Sydney") }.to raise_error GoogleMapsService::Error::RedirectError
       end
     end
 
-    context 'with connection failed' do
+    context "with connection failed" do
       before(:example) do
         stub_request(:get, /https:\/\/maps.googleapis.com\/maps\/api\/geocode\/.*/)
           .to_raise(SocketError)
       end
 
-      it 'should raise SocketError' do
-        expect { client.geocode('Sydney') }.to raise_error SocketError
+      it "should raise SocketError" do
+        expect { client.geocode("Sydney") }.to raise_error SocketError
       end
     end
   end
@@ -173,19 +173,19 @@ EOF
   # relatively small, eg a few milliseconds. We define a rate of
   # 3 queries per second, and run double that, which should take at
   # least 1 second but no more than 2.
-  context 'with total request is double of queries per second' do
+  context "with total request is double of queries per second" do
     let(:queries_per_second) { 3 }
     let(:total_request) { queries_per_second * 2 }
-    let(:client)  do
+    let(:client) do
       GoogleMapsService::Client.new(key: api_key, queries_per_second: queries_per_second)
     end
 
     before(:example) do
-      stub_request(:get, /https:\/\/maps.googleapis.com\/maps\/api\/.*/).
-        to_return(:status => 200, headers: { 'Content-Type' => 'application/json' }, :body => '{"status":"OK","results":[]}')
+      stub_request(:get, /https:\/\/maps.googleapis.com\/maps\/api\/.*/)
+        .to_return(status: 200, headers: {"Content-Type" => "application/json"}, body: '{"status":"OK","results":[]}')
     end
 
-    it 'should take between 1-2 seconds' do
+    it "should take between 1-2 seconds" do
       start_time = Time.now
       total_request.times do
         client.geocode("Sesame St.")
@@ -205,13 +205,13 @@ EOF
 
   describe "#client" do
     it "is not supported" do
-      expect { GoogleMapsService::Client.new().client }.to raise_error(StandardError, "GoogleMapsService::Client.client is no longer implemented.")
+      expect { GoogleMapsService::Client.new.client }.to raise_error(StandardError, "GoogleMapsService::Client.client is no longer implemented.")
     end
   end
 
   describe "#new_client" do
     it "is not supported" do
-      expect { GoogleMapsService::Client.new().send(:new_client) }.to raise_error(StandardError, "GoogleMapsService::Client.new_client is no longer implemented.")
+      expect { GoogleMapsService::Client.new.send(:new_client) }.to raise_error(StandardError, "GoogleMapsService::Client.new_client is no longer implemented.")
     end
   end
 end

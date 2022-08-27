@@ -1,10 +1,8 @@
-require_relative '../validator'
+require_relative "../validator"
 
 module GoogleMapsService::Apis
-
   # Performs requests to the Google Maps Distance Matrix API.
   module DistanceMatrix
-
     # Gets travel distance and time for a matrix of origins and destinations.
     #
     # @example Simple distance matrix
@@ -56,9 +54,9 @@ module GoogleMapsService::Apis
     # @return [Hash] Matrix of distances. Results are returned in rows, each row
     #     containing one origin paired with each destination.
     def distance_matrix(origins, destinations,
-        mode: nil, language: nil, avoid: nil, units: nil,
-        departure_time: nil, arrival_time: nil, transit_mode: nil,
-        transit_routing_preference: nil)
+      mode: nil, language: nil, avoid: nil, units: nil,
+      departure_time: nil, arrival_time: nil, transit_mode: nil,
+      transit_routing_preference: nil)
       params = {
         origins: GoogleMapsService::Convert.waypoints(origins),
         destinations: GoogleMapsService::Convert.waypoints(destinations)
@@ -72,14 +70,14 @@ module GoogleMapsService::Apis
       params[:departure_time] = GoogleMapsService::Convert.time(departure_time) if departure_time
       params[:arrival_time] = GoogleMapsService::Convert.time(arrival_time) if arrival_time
 
-      if departure_time and arrival_time
-        raise ArgumentError, 'Should not specify both departure_time and arrival_time.'
+      if departure_time && arrival_time
+        raise ArgumentError, "Should not specify both departure_time and arrival_time."
       end
 
-      params[:transit_mode] = GoogleMapsService::Convert.join_list('|', transit_mode) if transit_mode
+      params[:transit_mode] = GoogleMapsService::Convert.join_list("|", transit_mode) if transit_mode
       params[:transit_routing_preference] = transit_routing_preference if transit_routing_preference
 
-      return get('/maps/api/distancematrix/json', params)
+      get("/maps/api/distancematrix/json", params)
     end
   end
 end

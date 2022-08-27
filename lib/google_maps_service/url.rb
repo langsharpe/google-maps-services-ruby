@@ -1,8 +1,7 @@
-require 'base64'
-require 'uri'
+require "base64"
+require "uri"
 
 module GoogleMapsService
-
   # Helper for handling URL.
   module Url
     module_function
@@ -14,19 +13,18 @@ module GoogleMapsService
     #
     # @return [String] Base64-encoded HMAC-SHA1 signature
     def sign_hmac(secret, payload)
-      secret = secret.encode('ASCII')
-      payload = payload.encode('ASCII')
+      secret = secret.encode("ASCII")
+      payload = payload.encode("ASCII")
 
       # Decode the private key
       raw_key = Base64.urlsafe_decode64(secret)
 
       # Create a signature using the private key and the URL
-      digest = OpenSSL::Digest.new('sha1')
+      digest = OpenSSL::Digest.new("sha1")
       raw_signature = OpenSSL::HMAC.digest(digest, raw_key, payload)
 
       # Encode the signature into base64 for url use form.
-      signature =  Base64.urlsafe_encode64(raw_signature)
-      return signature
+      Base64.urlsafe_encode64(raw_signature)
     end
 
     # URL encodes the parameters.
@@ -43,15 +41,15 @@ module GoogleMapsService
     #
     # @return [String]
     def unquote_unreserved(uri)
-      parts = uri.split('%')
+      parts = uri.split("%")
 
-      (1..parts.length-1).each do |i|
+      (1..parts.length - 1).each do |i|
         h = parts[i][0..1]
 
-        if h =~ /^([\h]{2})(.*)/ and c = $1.to_i(16).chr and UNRESERVED_SET.include?(c)
-          parts[i] = c + $2
+        parts[i] = if h =~ (/^(\h{2})(.*)/) && (c = $1.to_i(16).chr) && UNRESERVED_SET.include?(c)
+          c + $2
         else
-          parts[i] = '%' + parts[i]
+          "%" + parts[i]
         end
       end
 

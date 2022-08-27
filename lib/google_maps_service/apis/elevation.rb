@@ -1,8 +1,6 @@
 module GoogleMapsService::Apis
-
   # Performs requests to the Google Maps Elevation API.
   module Elevation
-
     # Provides elevation data for locations provided on the surface of the
     # earth, including depth locations on the ocean floor (which return negative
     # values).
@@ -24,7 +22,7 @@ module GoogleMapsService::Apis
         locations: GoogleMapsService::Convert.waypoints(locations)
       }
 
-      return get('/maps/api/elevation/json', params)[:results]
+      get("/maps/api/elevation/json", params)[:results]
     end
 
     # Provides elevation data sampled along a path on the surface of the earth.
@@ -41,10 +39,10 @@ module GoogleMapsService::Apis
     #
     # @return [Array] Array of elevation data responses
     def elevation_along_path(path, samples)
-      if path.kind_of?(String)
-        path = "enc:%s" % path
+      path = if path.is_a?(String)
+        "enc:%s" % path
       else
-        path = GoogleMapsService::Convert.waypoints(path)
+        GoogleMapsService::Convert.waypoints(path)
       end
 
       params = {
@@ -52,7 +50,7 @@ module GoogleMapsService::Apis
         samples: samples
       }
 
-      return get('/maps/api/elevation/json', params)[:results]
+      get("/maps/api/elevation/json", params)[:results]
     end
   end
 end
