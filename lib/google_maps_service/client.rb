@@ -113,7 +113,7 @@ module GoogleMapsService
     # Create a new HTTP client.
     # @deprecated
     def new_client
-      raise NotImplementedError("GoogleMapsService::Client.new_client is no longer implemented.")
+      raise "GoogleMapsService::Client.new_client is no longer implemented."
     end
 
     # Build the user agent header

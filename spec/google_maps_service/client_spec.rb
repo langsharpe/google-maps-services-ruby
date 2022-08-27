@@ -200,4 +200,10 @@ EOF
       expect { GoogleMapsService::Client.new().client }.to raise_error(StandardError, "GoogleMapsService::Client.client is no longer implemented.")
     end
   end
+
+  describe "#new_client" do
+    it "is not supported" do
+      expect { GoogleMapsService::Client.new().send(:new_client) }.to raise_error(StandardError, "GoogleMapsService::Client.new_client is no longer implemented.")
+    end
+  end
 end
