@@ -17,6 +17,14 @@ describe GoogleMapsService::Client do
       client.geocode('Sesame St.')
       expect(a_request(:get, 'https://maps.googleapis.com/maps/api/geocode/json?address=Sesame+St.&client=foo&signature=fxbWUIcNPZSekVOhp2ul9LW5TpY=')).to have_been_made
     end
+
+    it 'should include user agent' do
+      client.geocode('Sesame St.')
+      expect(
+        a_request(:get, /https:\/\/maps.googleapis.com\/maps\/api\/.*/)
+        .with(headers: {'User-Agent' => /google-maps-services-ruby.*/})
+      ).to have_been_made
+    end
   end
 
   context 'with global parameters' do

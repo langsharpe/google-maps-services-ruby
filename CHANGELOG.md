@@ -3,6 +3,7 @@
 ## Unreleased
 
 * Replace Travis CI with Github Actions.
+* Fix User Agent not being included in request.
 
 ## 0.5.0 - 2022-08-24
 
