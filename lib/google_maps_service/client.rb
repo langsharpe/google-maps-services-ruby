@@ -113,13 +113,13 @@ module GoogleMapsService
     # Create a new HTTP client.
     # @deprecated
     def new_client
-      raise NotImplementedError("GoogleMapsService::Client.new_client is no longer implemented.")
+      raise "GoogleMapsService::Client.new_client is no longer implemented."
     end
 
     # Build the user agent header
     # @return [String]
     def user_agent
-      sprintf('google-maps-services-ruby/%s %s',
+      @user_agent ||= sprintf('google-maps-services-ruby/%s %s',
               GoogleMapsService::VERSION,
               GoogleMapsService::OS_VERSION)
     end
@@ -139,7 +139,11 @@ module GoogleMapsService
       Retriable.retriable timeout: @retry_timeout, on: RETRIABLE_ERRORS do |try|
         begin
           request_query_ticket
-          response = Net::HTTP.get_response(url)
+          request = Net::HTTP::Get.new(url)
+          request["User-Agent"] = user_agent
+          response = Net::HTTP.start(url.hostname, url.port, use_ssl: url.scheme == 'https') do |http|
+            http.request(request)
+          end
         ensure
           release_query_ticket
         end
