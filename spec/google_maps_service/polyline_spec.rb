@@ -1,11 +1,11 @@
-require 'spec_helper'
-require 'date'
+require "spec_helper"
+require "date"
 
 describe GoogleMapsService::Polyline do
-  context '.decode' do
-    context 'with Sydney to Melbourne polyline' do
-      let (:decoded_points) do
-        syd_mel_route = ("rvumEis{y[`NsfA~tAbF`bEj^h{@{KlfA~eA~`AbmEghAt~D|e@j" \
+  context ".decode" do
+    context "with Sydney to Melbourne polyline" do
+      let(:decoded_points) do
+        syd_mel_route = "rvumEis{y[`NsfA~tAbF`bEj^h{@{KlfA~eA~`AbmEghAt~D|e@j" \
                          "lRpO~yH_\\v}LjbBh~FdvCxu@`nCplDbcBf_B|wBhIfhCnqEb~D~" \
                          "jCn_EngApdEtoBbfClf@t_CzcCpoEr_Gz_DxmAphDjjBxqCviEf}" \
                          "B|pEvsEzbE~qGfpExjBlqCx}BvmLb`FbrQdpEvkAbjDllD|uDldD" \
@@ -29,30 +29,30 @@ describe GoogleMapsService::Polyline do
                          "}Aja@xnAbdDt|ErMrdFh{CzgAnlCnr@`wEM~mE`bA`uD|MlwKxmB" \
                          "vuFlhB|sN`_@fvBp`CxhCt_@loDsS|eDlmChgFlqCbjCxk@vbGxm" \
                          "CjbMba@rpBaoClcCk_DhgEzYdzBl\\vsA_JfGztAbShkGtEhlDzh" \
-                         "C~w@hnB{e@yF}`D`_Ayx@~vGqn@l}CafC")
+                         "C~w@hnB{e@yF}`D`_Ayx@~vGqn@l}CafC"
         GoogleMapsService::Polyline.decode(syd_mel_route)
       end
 
-      it 'should start in Sydney' do
+      it "should start in Sydney" do
         expect(decoded_points[0][:lat]).to be_within(0.000001).of(-33.86746)
         expect(decoded_points[0][:lng]).to be_within(0.000001).of(151.207090)
       end
 
-      it 'should end in Melbourne' do
+      it "should end in Melbourne" do
         expect(decoded_points[-1][:lat]).to be_within(0.000001).of(-37.814130)
         expect(decoded_points[-1][:lng]).to be_within(0.000001).of(144.963180)
       end
     end
   end
 
-  context '.encode' do
-    context 'with decoded polyline' do
-      it 'should be same as original polyline' do
-        test_polyline = ("gcneIpgxzRcDnBoBlEHzKjBbHlG`@`IkDxIi" \
-                         "KhKoMaLwTwHeIqHuAyGXeB~Ew@fFjAtIzExF")
+  context ".encode" do
+    context "with decoded polyline" do
+      it "should be same as original polyline" do
+        test_polyline = "gcneIpgxzRcDnBoBlEHzKjBbHlG`@`IkDxIi" \
+                         "KhKoMaLwTwHeIqHuAyGXeB~Ew@fFjAtIzExF"
         points = GoogleMapsService::Polyline.decode(test_polyline)
         actual_polyline = GoogleMapsService::Polyline.encode(points)
-        expect(actual_polyline).to eq (test_polyline)
+        expect(actual_polyline).to eq(test_polyline)
       end
     end
   end

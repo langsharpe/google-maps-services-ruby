@@ -1,7 +1,6 @@
-require_relative './convert'
+require_relative "./convert"
 
 module GoogleMapsService
-
   # Validate value that is accepted by Google Maps.
   module Validator
     module_function
@@ -17,7 +16,7 @@ module GoogleMapsService
       # NOTE(broady): the mode parameter is not validated by the Maps API
       # server. Check here to prevent silent failures.
       unless [:driving, :walking, :bicycling, :transit].include?(mode.to_sym)
-        raise ArgumentError, 'Invalid travel mode.'
+        raise ArgumentError, "Invalid travel mode."
       end
       mode
     end
@@ -31,7 +30,7 @@ module GoogleMapsService
     # @return [String] Valid route restriction.
     def avoid(avoid)
       unless [:tolls, :highways, :ferries].include?(avoid.to_sym)
-        raise ArgumentError, 'Invalid route restriction.'
+        raise ArgumentError, "Invalid route restriction."
       end
       avoid
     end

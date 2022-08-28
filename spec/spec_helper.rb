@@ -1,40 +1,24 @@
-SPEC_DIR = File.expand_path(File.dirname(__FILE__))
-ROOT_DIR = File.expand_path(File.join(SPEC_DIR, '..'))
-LIB_DIR = File.expand_path(File.join(ROOT_DIR, 'lib'))
-FIXTURES_DIR = File.expand_path(File.join(SPEC_DIR, 'fixtures'))
+require "google_maps_service"
 
-$LOAD_PATH.unshift(SPEC_DIR)
-$LOAD_PATH.unshift(LIB_DIR)
-$LOAD_PATH.uniq!
+require "coveralls"
+require "rspec"
+require "simplecov"
+require "webmock/rspec"
 
-if defined?(JRUBY_VERSION)
-  puts 'Skipping coverage on JRuby'
-else
-  # set up coverage
-  require 'simplecov'
-  require 'coveralls'
-
-  SimpleCov.formatters = [
-    Coveralls::SimpleCov::Formatter,
-    SimpleCov::Formatter::HTMLFormatter
-  ]
-  SimpleCov.start do
-    add_filter '/spec/'
-    add_filter 'version.rb'
-  end
+SimpleCov.formatters = [
+  Coveralls::SimpleCov::Formatter,
+  SimpleCov::Formatter::HTMLFormatter
+]
+SimpleCov.start do
+  add_filter "/spec/"
 end
 
-
-require 'rspec'
-require 'webmock/rspec'
-require 'google_maps_service'
-
-RSpec.shared_context 'HTTP client' do
+RSpec.shared_context "HTTP client" do
   let(:api_key) do
-    'AIZa1234567890'
+    "AIZa1234567890"
   end
 
   let(:client) do
-    client = GoogleMapsService::Client.new(key: api_key)
+    GoogleMapsService::Client.new(key: api_key)
   end
 end

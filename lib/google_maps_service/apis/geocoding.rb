@@ -1,10 +1,8 @@
-require 'google_maps_service/convert'
+require "google_maps_service/convert"
 
 module GoogleMapsService::Apis
-
   # Performs requests to the Google Maps Geocoding API.
   module Geocoding
-
     # Geocoding is the process of converting addresses
     # (like `"1600 Amphitheatre Parkway, Mountain View, CA"`) into geographic
     # coordinates (like latitude 37.423021 and longitude -122.083739), which you
@@ -47,7 +45,7 @@ module GoogleMapsService::Apis
       params[:region] = region if region
       params[:language] = language if language
 
-      return get('/maps/api/geocode/json', params)[:results]
+      get("/maps/api/geocode/json", params)[:results]
     end
 
     # Reverse geocoding is the process of converting geographic coordinates into a
@@ -74,12 +72,11 @@ module GoogleMapsService::Apis
         latlng: GoogleMapsService::Convert.latlng(latlng)
       }
 
-      params[:result_type] = GoogleMapsService::Convert.join_list('|', result_type) if result_type
-      params[:location_type] = GoogleMapsService::Convert.join_list('|', location_type) if location_type
+      params[:result_type] = GoogleMapsService::Convert.join_list("|", result_type) if result_type
+      params[:location_type] = GoogleMapsService::Convert.join_list("|", location_type) if location_type
       params[:language] = language if language
 
-      return get('/maps/api/geocode/json', params)[:results]
+      get("/maps/api/geocode/json", params)[:results]
     end
-
   end
 end

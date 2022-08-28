@@ -1,10 +1,8 @@
-require 'date'
+require "date"
 
 module GoogleMapsService::Apis
-
   # Performs requests to the Google Maps TimeZone API."""
   module TimeZone
-
     # Get time zone for a location on the earth, as well as that location's
     # time offset from UTC.
     #
@@ -35,7 +33,7 @@ module GoogleMapsService::Apis
 
       params[:language] = language if language
 
-      return get('/maps/api/timezone/json', params)
+      get("/maps/api/timezone/json", params)
     end
   end
 end
