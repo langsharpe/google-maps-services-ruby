@@ -2,8 +2,10 @@
 
 ## Unreleased
 
-* Replace Travis CI with Github Actions.
 * Fix User Agent not being included in request.
+* Replace Travis CI with Github Actions.
+* Format files with standardrb
+* Update Code of Conduct
 
 ## 0.5.0 - 2022-08-24
 
