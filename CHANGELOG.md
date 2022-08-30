@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.5.1 - 2022-08-30
+
 * Fix User Agent not being included in request.
 * Replace Travis CI with Github Actions.
 * Format files with standardrb
