@@ -1,5 +1,3 @@
-require "google_maps_service"
-
 require "coveralls"
 require "rspec"
 require "simplecov"
@@ -12,6 +10,8 @@ SimpleCov.formatters = [
 SimpleCov.start do
   add_filter "/spec/"
 end
+
+require "google_maps_service"
 
 RSpec.shared_context "HTTP client" do
   let(:api_key) do
