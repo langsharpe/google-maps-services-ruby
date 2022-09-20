@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+* Rename gem to google_maps_service_ruby
+
 ## 0.5.1 - 2022-08-30
 
 * Fix User Agent not being included in request.
