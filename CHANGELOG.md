@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.6.0 - 2022-10-16
+
 * Rename gem to google_maps_service_ruby
 
 ## 0.5.1 - 2022-08-30
