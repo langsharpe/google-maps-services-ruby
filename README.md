@@ -84,7 +84,7 @@ Your API key should be 40 characters long, and begin with `AIza`.
 
 Add this line to your application's Gemfile:
 
-    gem 'google_maps_service'
+    gem 'google_maps_service_ruby'
 
 And then execute:
 
@@ -92,7 +92,7 @@ And then execute:
 
 Or install it yourself as:
 
-    gem install google_maps_service
+    gem install google_maps_service_ruby
 
 In your Ruby code, add this line to load this gem:
 

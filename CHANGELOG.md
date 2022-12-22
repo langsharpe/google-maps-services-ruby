@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+* Fix gem name in README file
+
 ## 0.6.0 - 2022-10-16
 
 * Rename gem to google_maps_service_ruby
