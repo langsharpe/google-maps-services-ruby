@@ -32,7 +32,7 @@ module GoogleMapsService
           shift += 5
           break if b < 0x1f
         end
-        lat += (result & 1) != 0 ? (~result >> 1) : (result >> 1)
+        lat += ((result & 1) != 0) ? (~result >> 1) : (result >> 1)
 
         result = 1
         shift = 0
@@ -43,7 +43,7 @@ module GoogleMapsService
           shift += 5
           break if b < 0x1f
         end
-        lng += (result & 1) != 0 ? ~(result >> 1) : (result >> 1)
+        lng += ((result & 1) != 0) ? ~(result >> 1) : (result >> 1)
 
         points << {lat: lat * 1e-5, lng: lng * 1e-5}
       end
@@ -71,7 +71,7 @@ module GoogleMapsService
         d_lng = lng - last_lng
 
         [d_lat, d_lng].each do |v|
-          v = v < 0 ? ~(v << 1) : (v << 1)
+          v = (v < 0) ? ~(v << 1) : (v << 1)
           while v >= 0x20
             result += ((0x20 | (v & 0x1f)) + 63).chr
             v >>= 5
