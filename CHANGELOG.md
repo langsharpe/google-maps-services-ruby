@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.6.1 - 2023-03-18
+
 * Fix gem name in README file
 
 ## 0.6.0 - 2022-10-16
