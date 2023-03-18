@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+* Add support for ruby 3.2
+
 ## 0.6.1 - 2023-03-18
 
 * Fix gem name in README file
