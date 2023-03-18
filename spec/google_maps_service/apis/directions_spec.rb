@@ -132,6 +132,18 @@ describe GoogleMapsService::Apis::Directions do
     end
   end
 
+  context "can return full response" do
+    before(:example) do
+      stub_request(:get, /https:\/\/maps.googleapis.com\/maps\/api\/directions\/.*/)
+        .to_return(status: 200, headers: {"Content-Type" => "application/json"}, body: '{"status":"OK","routes":[]}')
+    end
+
+    it "should call Google Maps Web Service" do
+      response = client.directions("Toledo", "Madrid", response_slice: :all)
+      expect(response).to eq({status: "OK", routes: []})
+    end
+  end
+
   context "language parameter" do
     it "should call Google Maps Web Service" do
       client.directions("Toledo", "Madrid",

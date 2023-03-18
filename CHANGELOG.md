@@ -3,6 +3,8 @@
 ## Unreleased
 
 * Add support for ruby 3.2
+* Allow directions to return full response from API with response_slice option
+* Allow geocode and reverse_geocode to return full response from API with response_slice option
 
 ## 0.6.1 - 2023-03-18
 

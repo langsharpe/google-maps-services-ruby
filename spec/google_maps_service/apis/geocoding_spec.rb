@@ -10,8 +10,9 @@ describe GoogleMapsService::Apis::Geocoding do
 
   context "simple geocode" do
     it "should call Google Maps Web Service" do
-      client.geocode("Sydney")
+      results = client.geocode("Sydney")
       expect(a_request(:get, "https://maps.googleapis.com/maps/api/geocode/json?key=%s&address=Sydney" % api_key)).to have_been_made
+      expect(results).to eq([])
     end
   end
 
@@ -64,10 +65,18 @@ describe GoogleMapsService::Apis::Geocoding do
     end
   end
 
+  context "geocode and return all results" do
+    it "should call Google Maps Web Service" do
+      response = client.geocode(nil, components: {route: "Annegatan", administrative_area: "Helsinki", country: "Finland"}, response_slice: :all)
+      expect(response).to eq({status: "OK", results: []})
+    end
+  end
+
   context "simple reverse geocode" do
     it "should call Google Maps Web Service" do
-      client.reverse_geocode([40.714224, -73.961452])
+      results = client.reverse_geocode([40.714224, -73.961452])
       expect(a_request(:get, "https://maps.googleapis.com/maps/api/geocode/json?latlng=40.714224%%2C-73.961452&key=%s" % api_key)).to have_been_made
+      expect(results).to eq([])
     end
   end
 
@@ -89,6 +98,13 @@ describe GoogleMapsService::Apis::Geocoding do
     it "should call Google Maps Web Service" do
       client.reverse_geocode([40.714224, -73.961452], location_type: "ROOFTOP", result_type: ["street_address", "route"])
       expect(a_request(:get, "https://maps.googleapis.com/maps/api/geocode/json?latlng=40.714224%%2C-73.961452&result_type=street_address%%7Croute&key=%s&location_type=ROOFTOP" % api_key)).to have_been_made
+    end
+  end
+
+  context "reverse geocode and return all results" do
+    it "should call Google Maps Web Service" do
+      response = client.reverse_geocode([40.714224, -73.961452], response_slice: :all)
+      expect(response).to eq({status: "OK", results: []})
     end
   end
 

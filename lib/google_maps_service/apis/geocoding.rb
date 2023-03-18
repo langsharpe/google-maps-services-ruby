@@ -34,9 +34,11 @@ module GoogleMapsService::Apis
     # @param [String] region The region code, specified as a ccTLD (_top-level domain_)
     #                two-character value.
     # @param [String] language The language in which to return results.
+    # @param [Symbol] response_slice Specify subset of response to return. Defaults to :results for
+    #     backwards compatibility. Use :all to get complete response.
     #
     # @return [Array] Array of geocoding results.
-    def geocode(address, components: nil, bounds: nil, region: nil, language: nil)
+    def geocode(address, components: nil, bounds: nil, region: nil, language: nil, response_slice: :results)
       params = {}
 
       params[:address] = address if address
@@ -45,7 +47,11 @@ module GoogleMapsService::Apis
       params[:region] = region if region
       params[:language] = language if language
 
-      get("/maps/api/geocode/json", params)[:results]
+      if response_slice == :all
+        get("/maps/api/geocode/json", params)
+      else
+        get("/maps/api/geocode/json", params)[response_slice]
+      end
     end
 
     # Reverse geocoding is the process of converting geographic coordinates into a
@@ -65,9 +71,11 @@ module GoogleMapsService::Apis
     # @param [String, Array<String>] location_type One or more location types to restrict results to.
     # @param [String, Array<String>] result_type One or more address types to restrict results to.
     # @param [String] language The language in which to return results.
+    # @param [Symbol] response_slice Specify subset of response to return. Defaults to :results for
+    #     backwards compatibility. Use :all to get complete response.
     #
     # @return [Array] Array of reverse geocoding results.
-    def reverse_geocode(latlng, location_type: nil, result_type: nil, language: nil)
+    def reverse_geocode(latlng, location_type: nil, result_type: nil, language: nil, response_slice: :results)
       params = {
         latlng: GoogleMapsService::Convert.latlng(latlng)
       }
@@ -76,7 +84,11 @@ module GoogleMapsService::Apis
       params[:location_type] = GoogleMapsService::Convert.join_list("|", location_type) if location_type
       params[:language] = language if language
 
-      get("/maps/api/geocode/json", params)[:results]
+      if response_slice == :all
+        get("/maps/api/geocode/json", params)
+      else
+        get("/maps/api/geocode/json", params)[response_slice]
+      end
     end
   end
 end
