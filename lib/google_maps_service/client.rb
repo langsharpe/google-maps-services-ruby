@@ -10,6 +10,7 @@ require "google_maps_service/apis/elevation"
 require "google_maps_service/apis/geocoding"
 require "google_maps_service/apis/roads"
 require "google_maps_service/apis/time_zone"
+require "google_maps_service/apis/places"
 
 module GoogleMapsService
   # Core client functionality, common across all API requests (including performing
@@ -27,6 +28,7 @@ module GoogleMapsService
     include GoogleMapsService::Apis::Geocoding
     include GoogleMapsService::Apis::Roads
     include GoogleMapsService::Apis::TimeZone
+    include GoogleMapsService::Apis::Places
 
     # Secret key for accessing Google Maps Web Service.
     # Can be obtained at https://developers.google.com/maps/documentation/geocoding/get-api-key#key.
