@@ -1,10 +1,8 @@
-require_relative '../validator'
+require_relative "../validator"
 
 module GoogleMapsService::Apis
-
   # Performs requests to the Google Maps Places API.
   module Places
-
     # Places search.
     #
     # @param [String] query The text string on which to search, for example: "restaurant".
@@ -30,11 +28,11 @@ module GoogleMapsService::Apis
     #         html_attributions: set of attributions which must be displayed
     #         next_page_token: token for retrieving the next page of results
     def places(query, location: nil, radius: nil, language: nil, min_price: nil,
-        max_price: nil, open_now: false, type: nil, page_token: nil)
+      max_price: nil, open_now: false, type: nil, page_token: nil)
 
-      return _places("text", query: query, location: location, radius: radius,
-            language: language, min_price: min_price, max_price: max_price,
-            open_now: open_now, type: type, page_token: page_token)
+      _places("text", query: query, location: location, radius: radius,
+        language: language, min_price: min_price, max_price: max_price,
+        open_now: open_now, type: type, page_token: page_token)
     end
 
     # Performs nearby search for places.
@@ -68,25 +66,24 @@ module GoogleMapsService::Apis
     #         html_attributions: set of attributions which must be displayed
     #         next_page_token: token for retrieving the next page of results
     def places_nearby(location, radius: nil, keyword: nil, language: nil,
-        min_price: nil, max_price: nil, name: nil, open_now: false,
-        rank_by: nil, type: nil, page_token: nil)
+      min_price: nil, max_price: nil, name: nil, open_now: false,
+      rank_by: nil, type: nil, page_token: nil)
 
-        if rank_by == "distance"
-          if !(keyword || name || type)
-            raise ArgumentError, "either a keyword, name, or type arg is " +
-              "required when rank_by is set to distance"
-          elsif radius
-            raise ArgumentError, "radius cannot be specified when rank_by " +
-              "is set to distance"
-          end
+      if rank_by == "distance"
+        if !(keyword || name || type)
+          raise ArgumentError, "either a keyword, name, or type arg is " \
+            "required when rank_by is set to distance"
+        elsif radius
+          raise ArgumentError, "radius cannot be specified when rank_by " \
+            "is set to distance"
         end
+      end
 
-      return _places("nearby", location: location, radius: radius,
-                     keyword: keyword, language: language, min_price: min_price,
-                     max_price: max_price, name: name, open_now: open_now,
-                     rank_by: rank_by, type: type, page_token: page_token)      
+      _places("nearby", location: location, radius: radius,
+        keyword: keyword, language: language, min_price: min_price,
+        max_price: max_price, name: name, open_now: open_now,
+        rank_by: rank_by, type: type, page_token: page_token)
     end
-
 
     # Performs radar search for places.
     #
@@ -113,15 +110,15 @@ module GoogleMapsService::Apis
     #         results: list of places
     #         html_attributions: set of attributions which must be displayed
     def places_radar(location, radius, keyword: nil, min_price: nil,
-        max_price: nil, name: nil, open_now: false, type: nil)
+      max_price: nil, name: nil, open_now: false, type: nil)
 
       if !(keyword || name || type)
         raise ArgumentError, "either a keyword, name, or type arg is required"
       end
 
-      return _places("radar", location: location, radius: radius,
-                     keyword: keyword, min_price: min_price, max_price: max_price,
-                     name: name, open_now: open_now, type: type)
+      _places("radar", location: location, radius: radius,
+        keyword: keyword, min_price: min_price, max_price: max_price,
+        name: name, open_now: open_now, type: type)
     end
 
     # Comprehensive details for an individual place.
@@ -133,9 +130,9 @@ module GoogleMapsService::Apis
     #     result: dict containing place details
     #     html_attributions: set of attributions which must be displayed
     def place(place_id, language: nil)
-      params = { placeid: place_id }
+      params = {placeid: place_id}
       params[:language] = language if language
-      return get('/maps/api/place/details/json', params)
+      get("/maps/api/place/details/json", params)
     end
 
     # Photo URL from the Places API.
@@ -147,21 +144,21 @@ module GoogleMapsService::Apis
     # @param[Integer] max_height Specifies the maximum desired height, in pixels.
     # @return[String] String URL of the photo or nil upon error.
     def places_photo(photo_reference, max_width: nil, max_height: nil)
-      unless (max_width || max_height)
+      unless max_width || max_height
         raise ArgumentError, "a max_width or max_height arg is required"
       end
 
-      params = { photoreference: photo_reference }
+      params = {photoreference: photo_reference}
 
       params[:maxwidth] = max_width if max_width
       params[:maxheight] = max_height if max_height
 
-      image_response_decoder = -> (response) {
+      image_response_decoder = ->(response) {
         location = response.location
         location.nil? ? nil : response.location.url.to_s
       }
 
-      response = get('/maps/api/place/photo', params,
+      get("/maps/api/place/photo", params,
         custom_response_decoder: image_response_decoder)
     end
 
@@ -186,13 +183,13 @@ module GoogleMapsService::Apis
     #        the region defined by location and radius.
     # @return[Array] list of predictions
     def places_autocomplete(input_text, offset: nil, location: nil,
-        radius: nil, language: nil, types: nil,
-        components: nil, strict_bounds: false)
+      radius: nil, language: nil, types: nil,
+      components: nil, strict_bounds: false)
 
-      return _autocomplete("", input_text, offset: offset,
-                           location: location, radius: radius, language: language,
-                           types: types, components: components,
-                           strict_bounds: strict_bounds)
+      _autocomplete("", input_text, offset: offset,
+        location: location, radius: radius, language: language,
+        types: types, components: components,
+        strict_bounds: strict_bounds)
     end
 
     # Returns Place predictions given a textual search query, such as
@@ -209,9 +206,9 @@ module GoogleMapsService::Apis
     # @param[String] language: The language in which to return results.
     # @return[Array] list of predictions
     def places_autocomplete_query(input_text, offset: nil, location: nil,
-        radius: nil, language: nil)
+      radius: nil, language: nil)
 
-      return _autocomplete("query", input_text, offset: offset,
+      _autocomplete("query", input_text, offset: offset,
         location: location, radius: radius, language: language)
     end
 
@@ -220,9 +217,9 @@ module GoogleMapsService::Apis
     # Internal handler for ``places``, ``places_nearby``, and ``places_radar``.
     # See each method's docs for arg details.
     def _places(url_part,
-        query: nil, location: nil, radius: nil, keyword: nil, language: nil,
-        min_price: 0, max_price: 4, name: nil, open_now: nil,
-        rank_by: nil, type: nil, page_token: nil)
+      query: nil, location: nil, radius: nil, keyword: nil, language: nil,
+      min_price: 0, max_price: 4, name: nil, open_now: nil,
+      rank_by: nil, type: nil, page_token: nil)
 
       params = {}
       params[:query] = query if query
@@ -238,16 +235,16 @@ module GoogleMapsService::Apis
       params[:type] = type if type
       params[:pagetoken] = page_token if page_token
 
-      return get('/maps/api/place/%ssearch/json' % url_part, params)
+      get("/maps/api/place/%ssearch/json" % url_part, params)
     end
 
     # Internal handler for ``autocomplete`` and ``autocomplete_query``.
     # See each method's docs for arg details.
     def _autocomplete(url_part, input_text, offset: nil, location: nil,
-        radius: nil, language: nil, types: nil, components: nil,
-        strict_bounds: false)
+      radius: nil, language: nil, types: nil, components: nil,
+      strict_bounds: false)
 
-      params = { input: input_text }
+      params = {input: input_text}
       params[:offset] = offset if offset
       params[:location] = GoogleMapsService::Convert.latlng(location) if location
       params[:radius] = radius if radius
@@ -256,7 +253,7 @@ module GoogleMapsService::Apis
       params[:components] = GoogleMapsService::Convert.components(components) if components
       params[:strictbounds] = true if strict_bounds
 
-      return get('/maps/api/place/%sautocomplete/json' % url_part, params).fetch(:predictions, [])
+      get("/maps/api/place/%sautocomplete/json" % url_part, params).fetch(:predictions, [])
     end
   end
 end
