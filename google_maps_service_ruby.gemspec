@@ -7,7 +7,7 @@ Gem::Specification.new do |spec|
   spec.email = ["langer8191@gmail.com"]
 
   spec.summary = "Google Maps API Client"
-  spec.description = "Google Maps API Client, including the Directions API, Distance Matrix API and Geocoding API. google_maps_service_ruby is a fork of google_maps_service, which is a fork of google-maps-services-python."
+  spec.description = "Google Maps API Client, including the Directions API, Distance Matrix API, Geocoding API and Places API. google_maps_service_ruby is a fork of google_maps_service, which is a fork of google-maps-services-python."
   spec.homepage = "https://github.com/langsharpe/google-maps-services-ruby"
   spec.license = "Apache-2.0"
   spec.required_ruby_version = ">= 2.7.0"
