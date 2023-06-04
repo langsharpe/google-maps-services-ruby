@@ -86,30 +86,4 @@ describe GoogleMapsService::Apis::Places do
       end
     end
   end
-
-  context "autocomplete" do
-    it "should call Google Maps Web Service" do
-      client.places_autocomplete("Google", offset: 3,
-        location: location,
-        radius: radius,
-        language: language,
-        types: "geocode",
-        components: {country: "au"},
-        strict_bounds: true)
-
-      expect(a_request(:get, "https://maps.googleapis.com/maps/api/place/autocomplete/json" \
-        "?components=country:au&input=Google&language=en-AU&" \
-        "location=-33.867460,151.207090&offset=3&radius=100&" +
-        "strictbounds=true&types=geocode&key=%s" % api_key)).to have_been_made
-    end
-  end
-
-  context "autocomplete query" do
-    it "should call Google Maps Web Service" do
-      client.places_autocomplete_query("pizza near New York")
-
-      expect(a_request(:get, "https://maps.googleapis.com/maps/api/place/queryautocomplete/json" +
-        "?input=pizza+near+New+York&key=%s" % api_key)).to have_been_made
-    end
-  end
 end

@@ -126,56 +126,6 @@ module GoogleMapsService::Apis
         custom_response_decoder: image_response_decoder)
     end
 
-    # Returns Place predictions given a textual search string and optional
-    # geographic bounds.
-    #
-    # @param[String] input_text: The text string on which to search.
-    # @param[Integer] offset The position, in the input term, of the last
-    #       character that the service uses to match predictions. For example,
-    #       if the input is 'Google' and the offset is 3, the service will
-    #       match on 'Goo'.
-    # @param[String, Hash, Array] location The latitude/longitude value for
-    #        which you wish to obtain the closest, human-readable address.
-    # @param[Integer] radius Distance in meters within which to bias results.
-    # @param[String] language The language in which to return results.
-    # @param[String] types: Restricts the results to places matching the
-    #        specified type. The full list of supported types is available here:
-    #        https://developers.google.com/places/web-service/autocomplete#place_types
-    # @param[Hash] components A component filter for which you wish to obtain a geocode,
-    #       for example: ``{'administrative_area': 'TX','country': 'US'}``
-    # @param[Boolean] strict_bounds Returns only those places that are strictly within
-    #        the region defined by location and radius.
-    # @return[Array] list of predictions
-    def places_autocomplete(input_text, offset: nil, location: nil,
-      radius: nil, language: nil, types: nil,
-      components: nil, strict_bounds: false)
-
-      _autocomplete("", input_text, offset: offset,
-        location: location, radius: radius, language: language,
-        types: types, components: components,
-        strict_bounds: strict_bounds)
-    end
-
-    # Returns Place predictions given a textual search query, such as
-    # "pizza near New York", and optional geographic bounds.
-
-    # @param[String] input_text: The text query on which to search.
-    # @param[Integer] offset: The position, in the input term, of the last
-    #       character that the service uses to match predictions. For example,
-    #       if the input is 'Google' and the offset is 3, the service will
-    #       match on 'Goo'.
-    # @param[String, Hash, Array] location: The latitude/longitude value for
-    #       which you wish to obtain the closest, human-readable address.
-    # @param[Number] radius: Distance in meters within which to bias results.
-    # @param[String] language: The language in which to return results.
-    # @return[Array] list of predictions
-    def places_autocomplete_query(input_text, offset: nil, location: nil,
-      radius: nil, language: nil)
-
-      _autocomplete("query", input_text, offset: offset,
-        location: location, radius: radius, language: language)
-    end
-
     private
 
     # Internal handler for ``places``, ``places_nearby``, and ``places_radar``.
@@ -200,24 +150,6 @@ module GoogleMapsService::Apis
       params[:pagetoken] = page_token if page_token
 
       get("/maps/api/place/%ssearch/json" % url_part, params)
-    end
-
-    # Internal handler for ``autocomplete`` and ``autocomplete_query``.
-    # See each method's docs for arg details.
-    def _autocomplete(url_part, input_text, offset: nil, location: nil,
-      radius: nil, language: nil, types: nil, components: nil,
-      strict_bounds: false)
-
-      params = {input: input_text}
-      params[:offset] = offset if offset
-      params[:location] = GoogleMapsService::Convert.latlng(location) if location
-      params[:radius] = radius if radius
-      params[:language] = language if language
-      params[:types] = types if types
-      params[:components] = GoogleMapsService::Convert.components(components) if components
-      params[:strictbounds] = true if strict_bounds
-
-      get("/maps/api/place/%sautocomplete/json" % url_part, params).fetch(:predictions, [])
     end
   end
 end
