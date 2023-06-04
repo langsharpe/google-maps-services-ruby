@@ -142,7 +142,7 @@ end
 gmaps = GoogleMapsService::Client.new
 ```
 
-For more examples and detail (setup **proxy**, **timeout**, **caching**, etc.) while initializing the client, check out [Client documentation](http://www.rubydoc.info/gems/google_maps_service/GoogleMapsService/Apis/Client#initialize-instance_method).
+For more examples and detail (setup **proxy**, **timeout**, **caching**, etc.) while initializing the client, check out [Client documentation](https://www.rubydoc.info/gems/google_maps_service_ruby/GoogleMapsService/Apis/Client#initialize-instance_method).
 
 ### Latitude/longitude pairs format
 
@@ -238,7 +238,7 @@ Sample result:
 }]
 ```
 
-For more usage examples and result format, check out [gem documentation](http://www.rubydoc.info/gems/google_maps_service/GoogleMapsService/Apis/Directions), [test script](https://github.com/langsharpe/google-maps-services-ruby/tree/master/spec/google_maps_service/apis/directions_spec.rb), and [Google Maps Directions API documentation][Directions API].
+For more usage examples and result format, check out [gem documentation](https://www.rubydoc.info/gems/google_maps_service_ruby/GoogleMapsService/Apis/Directions), [test script](https://github.com/langsharpe/google-maps-services-ruby/tree/master/spec/google_maps_service/apis/directions_spec.rb), and [Google Maps Directions API documentation][Directions API].
 
 ### Distance Matrix API
 
@@ -253,7 +253,7 @@ matrix = gmaps.distance_matrix(origins, destinations,
     units: 'imperial')
 ```
 
-For more usage examples and result format, check out [gem documentation](http://www.rubydoc.info/gems/google_maps_service/GoogleMapsService/Apis/DistanceMatrix), [test script](https://github.com/langsharpe/google-maps-services-ruby/tree/master/spec/google_maps_service/apis/distance_matrix_spec.rb), and [Google Maps Distance Matrix API documentation][Distance Matrix API].
+For more usage examples and result format, check out [gem documentation](https://www.rubydoc.info/gems/google_maps_service_ruby/GoogleMapsService/Apis/DistanceMatrix), [test script](https://github.com/langsharpe/google-maps-services-ruby/tree/master/spec/google_maps_service/apis/distance_matrix_spec.rb), and [Google Maps Distance Matrix API documentation][Distance Matrix API].
 
 ### Elevation API
 
@@ -267,7 +267,7 @@ locations = [[40.714728, -73.998672], [-34.397, 150.644]]
 results = gmaps.elevation_along_path(locations, 5)
 ```
 
-For more usage examples and result format, check out [gem documentation](http://www.rubydoc.info/gems/google_maps_service/GoogleMapsService/Apis/Elevation), [test script](https://github.com/langsharpe/google-maps-services-ruby/tree/master/spec/google_maps_service/apis/elevation_spec.rb), and [Google Maps Elevation API documentation][Elevation API].
+For more usage examples and result format, check out [gem documentation](https://www.rubydoc.info/gems/google_maps_service_ruby/GoogleMapsService/Apis/Elevation), [test script](https://github.com/langsharpe/google-maps-services-ruby/tree/master/spec/google_maps_service/apis/elevation_spec.rb), and [Google Maps Elevation API documentation][Elevation API].
 
 ### Geocoding API
 
@@ -279,7 +279,7 @@ results = gmaps.geocode('1600 Amphitheatre Parkway, Mountain View, CA')
 results = gmaps.reverse_geocode([40.714224, -73.961452])
 ```
 
-For more usage examples and result format, check out [gem documentation](http://www.rubydoc.info/gems/google_maps_service/GoogleMapsService/Apis/Geocoding), [test script](https://github.com/langsharpe/google-maps-services-ruby/tree/master/spec/google_maps_service/apis/geocoding_spec.rb), and [Google Maps Geocoding API documentation][Geocoding API].
+For more usage examples and result format, check out [gem documentation](https://www.rubydoc.info/gems/google_maps_service_ruby/GoogleMapsService/Apis/Geocoding), [test script](https://github.com/langsharpe/google-maps-services-ruby/tree/master/spec/google_maps_service/apis/geocoding_spec.rb), and [Google Maps Geocoding API documentation][Geocoding API].
 
 ### Places API
 
@@ -299,7 +299,7 @@ results = gmaps.places_nearby(
 # Get the url for a photo returned by the places api
 url = gmaps.places_photo(photo_reference, max_width: 400, max_height: 400)
 ```
-For more usage examples and result format, check out [gem documentation](http://www.rubydoc.info/gems/google_maps_service/GoogleMapsService/Apis/Places), [test script](https://github.com/langsharpe/google-maps-services-ruby/tree/master/spec/google_maps_service/apis/places_spec.rb), and [Google Maps Places API documentation][Places API].
+For more usage examples and result format, check out [gem documentation](https://www.rubydoc.info/gems/google_maps_service_ruby/GoogleMapsService/Apis/Places), [test script](https://github.com/langsharpe/google-maps-services-ruby/tree/master/spec/google_maps_service/apis/places_spec.rb), and [Google Maps Places API documentation][Places API].
 
 ### Roads API
 
@@ -330,7 +330,7 @@ place_ids = [
 results = gmaps.speed_limits(place_ids)
 ```
 
-For more usage examples and result format, check out [gem documentation](http://www.rubydoc.info/gems/google_maps_service/GoogleMapsService/Apis/Roads), [test script](https://github.com/langsharpe/google-maps-services-ruby/tree/master/spec/google_maps_service/apis/roads_spec.rb), and [Google Maps Roads API documentation][Roads API].
+For more usage examples and result format, check out [gem documentation](https://www.rubydoc.info/gems/google_maps_service_ruby/GoogleMapsService/Apis/Roads), [test script](https://github.com/langsharpe/google-maps-services-ruby/tree/master/spec/google_maps_service/apis/roads_spec.rb), and [Google Maps Roads API documentation][Roads API].
 
 ### Time Zone API
 
@@ -342,7 +342,7 @@ timezone = gmaps.timezone([39.603481, -119.682251])
 timezone = gmaps.timezone([39.603481, -119.682251], timestamp: Time.at(1608))
 ```
 
-For more usage examples and result format, check out [gem documentation](http://www.rubydoc.info/gems/google_maps_service/GoogleMapsService/Apis/TimeZone), [test script](https://github.com/langsharpe/google-maps-services-ruby/tree/master/spec/google_maps_service/apis/time_zone_spec.rb), and [Google Maps Time Zone API documentation][Time Zone API].
+For more usage examples and result format, check out [gem documentation](https://www.rubydoc.info/gems/google_maps_service_ruby/GoogleMapsService/Apis/TimeZone), [test script](https://github.com/langsharpe/google-maps-services-ruby/tree/master/spec/google_maps_service/apis/time_zone_spec.rb), and [Google Maps Time Zone API documentation][Time Zone API].
 
 ### Polyline encoder/decoder
 
