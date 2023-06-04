@@ -16,6 +16,7 @@ The Ruby gem for Google Maps Web Service APIs is a gem for the following Google 
  - [Google Maps Distance Matrix API][Distance Matrix API]
  - [Google Maps Elevation API][Elevation API]
  - [Google Maps Geocoding API][Geocoding API]
+ - [Google Maps Places API][Places API]
  - [Google Maps Time Zone API][Time Zone API]
  - [Google Maps Roads API][Roads API]
 
@@ -280,6 +281,26 @@ results = gmaps.reverse_geocode([40.714224, -73.961452])
 
 For more usage examples and result format, check out [gem documentation](http://www.rubydoc.info/gems/google_maps_service/GoogleMapsService/Apis/Geocoding), [test script](https://github.com/langsharpe/google-maps-services-ruby/tree/master/spec/google_maps_service/apis/geocoding_spec.rb), and [Google Maps Geocoding API documentation][Geocoding API].
 
+### Places API
+
+```ruby
+# Search for places
+results = gmaps.places(
+  'Pizza Restaurant',
+  location: {:lat=>37.4221114, :lng=>-122.0867443},
+)
+
+# Search for places nearby
+results = gmaps.places_nearby(
+  location: {:lat=>37.4221114, :lng=>-122.0867443},
+  radius: 5000,
+)
+
+# Get the url for a photo returned by the places api
+url = gmaps.places_photo(photo_reference, max_width: 400, max_height: 400)
+```
+For more usage examples and result format, check out [gem documentation](http://www.rubydoc.info/gems/google_maps_service/GoogleMapsService/Apis/Places), [test script](https://github.com/langsharpe/google-maps-services-ruby/tree/master/spec/google_maps_service/apis/places_spec.rb), and [Google Maps Places API documentation][Places API].
+
 ### Roads API
 
 ```ruby
@@ -367,6 +388,7 @@ contribute, please read [How to Contribute](#contributing).
 [Distance Matrix API]: https://developers.google.com/maps/documentation/distancematrix/
 [Elevation API]: https://developers.google.com/maps/documentation/elevation/
 [Geocoding API]: https://developers.google.com/maps/documentation/geocoding/
+[Places API]: https://developers.google.com/maps/documentation/places/
 [Time Zone API]: https://developers.google.com/maps/documentation/timezone/
 [Roads API]: https://developers.google.com/maps/documentation/roads/
 
