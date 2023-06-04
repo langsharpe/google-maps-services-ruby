@@ -85,42 +85,6 @@ module GoogleMapsService::Apis
         rank_by: rank_by, type: type, page_token: page_token)
     end
 
-    # Performs radar search for places.
-    #
-    # @param[String, Hash, Array] location The latitude/longitude value for
-    #        which you wish to obtain the closest, human-readable address.
-    # @param [Integer] radius Distance in meters within which to bias results.
-    # @param[String] keyword A term to be matched against all content that
-    #        Google has indexed for this place.
-    # @param[Integer] min_price Restricts results to only those places with no
-    #        less than this price level. Valid values are in the range from 0
-    #        (most affordable) to 4 (most expensive).
-    # @param[Integer] max_price Restricts results to only those places with no
-    #        greater than this price level. Valid values are in the range
-    #        from 0 (most affordable) to 4 (most expensive).
-    # @param[String, Array] name One or more terms to be matched against the
-    #        names of places.
-    # @param[Boolean] open_now Return only those places that are open for
-    #        business at the time the query is sent.
-    # @param[String] type Restricts the results to places matching the specified
-    #       type. The full list of supported types is available here:
-    #       https://developers.google.com/places/supported_types
-    # @return[Hash] Hash with the following keys:
-    #         status: status code
-    #         results: list of places
-    #         html_attributions: set of attributions which must be displayed
-    def places_radar(location, radius, keyword: nil, min_price: nil,
-      max_price: nil, name: nil, open_now: false, type: nil)
-
-      if !(keyword || name || type)
-        raise ArgumentError, "either a keyword, name, or type arg is required"
-      end
-
-      _places("radar", location: location, radius: radius,
-        keyword: keyword, min_price: min_price, max_price: max_price,
-        name: name, open_now: open_now, type: type)
-    end
-
     # Comprehensive details for an individual place.
     #
     # @param[String] place_id A textual identifier that uniquely identifies a
