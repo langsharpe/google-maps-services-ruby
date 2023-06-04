@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.6.3 - 2023-06-04
+
 * Add Places API place, places, places_nearby and places_photo support
 
 ## 0.6.2 - 2023-03-18
