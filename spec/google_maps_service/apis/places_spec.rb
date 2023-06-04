@@ -29,7 +29,7 @@ describe GoogleMapsService::Apis::Places do
 
   context "places nearby search" do
     it "should call Google Maps Web Service" do
-      client.places_nearby(location, keyword: "foo",
+      client.places_nearby(location: location, keyword: "foo",
         language: language, min_price: 1,
         max_price: 4, name: "bar", open_now: true,
         rank_by: "distance", type: type)
@@ -43,7 +43,7 @@ describe GoogleMapsService::Apis::Places do
     context "when rank by distance is not paired with a keyword, name, or type" do
       it "should raise ArgumentError" do
         expect {
-          client.places_nearby(location, rank_by: "distance")
+          client.places_nearby(location: location, rank_by: "distance")
         }.to raise_error ArgumentError
       end
     end
