@@ -65,10 +65,9 @@ module GoogleMapsService::Apis
     #         results: list of places
     #         html_attributions: set of attributions which must be displayed
     #         next_page_token: token for retrieving the next page of results
-    def places_nearby(location, radius: nil, keyword: nil, language: nil,
+    def places_nearby(location: nil, radius: nil, keyword: nil, language: nil,
       min_price: nil, max_price: nil, name: nil, open_now: false,
       rank_by: nil, type: nil, page_token: nil)
-
       if rank_by == "distance"
         if !(keyword || name || type)
           raise ArgumentError, "either a keyword, name, or type arg is " \
@@ -118,8 +117,7 @@ module GoogleMapsService::Apis
       params[:maxheight] = max_height if max_height
 
       image_response_decoder = ->(response) {
-        location = response.location
-        location.nil? ? nil : response.location.url.to_s
+        response["location"]
       }
 
       get("/maps/api/place/photo", params,
