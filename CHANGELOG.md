@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+* Add Places API place, places, places_nearby and places_photo support
+
 ## 0.6.2 - 2023-03-18
 
 * Add support for ruby 3.2
