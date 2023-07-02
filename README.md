@@ -48,17 +48,7 @@ This gem return a Ruby Hash/Array object as the API result. The result format st
 
 ## Contributing
 
-If you find a bug please [log an issue][issues].
-
-The goal of this gem is to follow the API and implementation of the [python client](https://github.com/googlemaps/google-maps-services-python) as much as possible. If you would like to add support for an API please consider porting the python implementation.
-
-To create a new pull request:
-
-1. Fork it (https://github.com/langsharpe/google-maps-services-ruby/fork).
-2. Create your feature branch (`git checkout -b my-new-feature`).
-3. Commit your changes (`git commit -am 'Add some feature'`).
-4. Push to the branch (`git push origin my-new-feature`).
-5. Create a new Pull Request.
+See [CONTRIBUTING.md](https://github.com/langsharpe/google-maps-services-ruby/blob/master/CONTRIBUTING.md) for details on contributing to this project.
 
 ## Requirements
 
