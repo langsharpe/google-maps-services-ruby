@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+* Explicitly require base64 gem as required by ruby 3.4
+
 ## 0.6.3 - 2023-06-04
 
 * Add Places API place, places, places_nearby and places_photo support

@@ -25,6 +25,7 @@ Gem::Specification.new do |spec|
 
   spec.add_runtime_dependency "multi_json", "~> 1.15"
   spec.add_runtime_dependency "retriable", "~> 3.1"
+  spec.add_runtime_dependency "base64"
 
   spec.add_development_dependency "coveralls_reborn", "~> 0.25.0"
   spec.add_development_dependency "rake", "~> 13.0"

@@ -29,7 +29,6 @@ module GoogleMapsService::Apis
     #         next_page_token: token for retrieving the next page of results
     def places(query, location: nil, radius: nil, language: nil, min_price: nil,
       max_price: nil, open_now: false, type: nil, page_token: nil)
-
       _places("text", query: query, location: location, radius: radius,
         language: language, min_price: min_price, max_price: max_price,
         open_now: open_now, type: type, page_token: page_token)
@@ -132,7 +131,6 @@ module GoogleMapsService::Apis
       query: nil, location: nil, radius: nil, keyword: nil, language: nil,
       min_price: 0, max_price: 4, name: nil, open_now: nil,
       rank_by: nil, type: nil, page_token: nil)
-
       params = {}
       params[:query] = query if query
       params[:minprice] = min_price if min_price
