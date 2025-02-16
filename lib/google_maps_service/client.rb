@@ -10,6 +10,7 @@ require "google_maps_service/apis/elevation"
 require "google_maps_service/apis/geocoding"
 require "google_maps_service/apis/places"
 require "google_maps_service/apis/roads"
+require "google_maps_service/apis/routes"
 require "google_maps_service/apis/time_zone"
 
 module GoogleMapsService
@@ -28,6 +29,7 @@ module GoogleMapsService
     include GoogleMapsService::Apis::Geocoding
     include GoogleMapsService::Apis::Places
     include GoogleMapsService::Apis::Roads
+    include GoogleMapsService::Apis::Routes
     include GoogleMapsService::Apis::TimeZone
 
     # Secret key for accessing Google Maps Web Service.
@@ -140,6 +142,38 @@ module GoogleMapsService
           request_query_ticket
           request = Net::HTTP::Get.new(url)
           request["User-Agent"] = user_agent
+          response = Net::HTTP.start(url.hostname, url.port, use_ssl: url.scheme == "https") do |http|
+            http.request(request)
+          end
+        ensure
+          release_query_ticket
+        end
+
+        return custom_response_decoder.call(response) if custom_response_decoder
+        decode_response_body(response)
+      end
+    end
+
+    # Make API call using an http post.
+    #
+    # @param [String] path Url path.
+    # @param [String] params Request parameters.
+    # @param [String] base_url Base Google Maps Web Service API endpoint url.
+    # @param [Boolean] accepts_client_id Sign the request using API {#keys} instead of {#client_id}.
+    # @param [Method] custom_response_decoder Custom method to decode raw API response.
+    #
+    # @return [Object] Decoded response body.
+    def post(path, params, base_url: DEFAULT_BASE_URL, accepts_client_id: true, custom_response_decoder: nil, field_mask: nil)
+      url = URI(base_url + generate_auth_url(path, {}, accepts_client_id))
+
+      Retriable.retriable timeout: @retry_timeout, on: RETRIABLE_ERRORS do |try|
+        begin
+          request_query_ticket
+          request = Net::HTTP::Post.new(url)
+          request["User-Agent"] = user_agent
+          request["X-Goog-FieldMask"] = field_mask if field_mask
+          request["Content-Type"] = "application/json"
+          request.body = MultiJson.dump(params)
           response = Net::HTTP.start(url.hostname, url.port, use_ssl: url.scheme == "https") do |http|
             http.request(request)
           end
