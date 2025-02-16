@@ -64,7 +64,6 @@ module GoogleMapsService::Apis
       language: nil, units: nil, region: nil, departure_time: nil,
       arrival_time: nil, optimize_waypoints: false, transit_mode: nil,
       transit_routing_preference: nil, response_slice: :routes)
-
       params = {
         origin: GoogleMapsService::Convert.waypoint(origin),
         destination: GoogleMapsService::Convert.waypoint(destination)

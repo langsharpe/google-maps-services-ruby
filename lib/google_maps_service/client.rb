@@ -80,7 +80,7 @@ module GoogleMapsService
     def initialize(**options)
       [:key, :client_id, :client_secret,
         :retry_timeout, :queries_per_second].each do |key|
-        instance_variable_set("@#{key}".to_sym, options[key] || GoogleMapsService.instance_variable_get("@#{key}"))
+        instance_variable_set(:"@#{key}", options[key] || GoogleMapsService.instance_variable_get(:"@#{key}"))
       end
       [:request_options, :ssl_options, :connection].each do |key|
         if options.has_key?(key)

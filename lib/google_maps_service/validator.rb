@@ -1,4 +1,4 @@
-require_relative "./convert"
+require_relative "convert"
 
 module GoogleMapsService
   # Validate value that is accepted by Google Maps.
