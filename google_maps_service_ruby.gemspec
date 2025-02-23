@@ -16,8 +16,7 @@ Gem::Specification.new do |spec|
     "bug_tracker_uri" => "https://github.com/langsharpe/google-maps-services-ruby/issues",
     "changelog_uri" => "https://raw.githubusercontent.com/langsharpe/google-maps-services-ruby/master/CHANGELOG.md",
     "documentation_uri" => "https://www.rubydoc.info/gems/google_maps_service_ruby",
-    "homepage_uri" => spec.homepage,
-    "source_code_uri" => spec.homepage
+    "homepage_uri" => spec.homepage
   }
 
   spec.files = Dir["LICENSE", "*.md", "lib/**/*"]
