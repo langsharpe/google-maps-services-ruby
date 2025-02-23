@@ -19,6 +19,7 @@ The Ruby gem for Google Maps Web Service APIs is a gem for the following Google 
  - [Google Maps Places API][Places API]
  - [Google Maps Time Zone API][Time Zone API]
  - [Google Maps Roads API][Roads API]
+ - [Google Maps Routes API][Routes API]
 
 Keep in mind that the same [terms and conditions](https://developers.google.com/maps/terms) apply
 to usage of the APIs when they're accessed through this gem.
@@ -164,6 +165,27 @@ latlng = {latitude: 40.714224, longitude: -73.961452}
 latlng = {'lat' => 40.714224, 'lng' => -73.961452}
 latlng = {'latitude' => 40.714224, 'longitude' => -73.961452}
 ```
+
+### Routes API
+
+```ruby
+route = gmaps.compute_routes(
+  {address: 'South Brisbane, QLD, AU'},
+  {address: 'Fitzroy, VIC, AU'}
+)
+
+routes = gmaps.compute_route_matrix(
+  [
+    {waypoint: {'South Brisbane, QLD, AU'}},
+  ],
+  [
+    {waypoint: {address: 'Fitzroy, VIC, AU'}},
+    {waypoint: {address: 'Richmond, VIC, AU'}}
+  ],
+)
+```
+
+For more usage examples and result format, check out [gem documentation](https://www.rubydoc.info/gems/google_maps_service_ruby/GoogleMapsService/Apis/Routes), [test script](https://github.com/langsharpe/google-maps-services-ruby/tree/master/spec/google_maps_service/apis/routes_spec.rb), and [Google Maps Routes API documentation][Routes API].
 
 ### Directions API
 
@@ -382,6 +404,7 @@ encoded_path = GoogleMapsService::Polyline.encode(path)
 [Places API]: https://developers.google.com/maps/documentation/places/
 [Time Zone API]: https://developers.google.com/maps/documentation/timezone/
 [Roads API]: https://developers.google.com/maps/documentation/roads/
+[Routes API]: https://developers.google.com/maps/documentation/routes/
 
 [Google Encoded Polyline]: https://developers.google.com/maps/documentation/utilities/polylinealgorithm
 
