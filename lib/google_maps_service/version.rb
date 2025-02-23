@@ -1,6 +1,6 @@
 module GoogleMapsService
   # GoogleMapsService gem version
-  VERSION = "0.6.3"
+  VERSION = "0.7.0"
 
   # Current operating system
   # @private

@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+## 0.7.0 - 2025-02-23
+
+* Add Support for Routes API including compute_routes and compute_route_matrix
 * Explicitly require base64 gem as required by ruby 3.4
 
 ## 0.6.3 - 2023-06-04
