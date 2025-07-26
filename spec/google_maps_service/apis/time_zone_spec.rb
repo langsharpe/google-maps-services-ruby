@@ -5,6 +5,7 @@ describe GoogleMapsService::Apis::TimeZone do
 
   before(:example) do
     stub_request(:get, /https:\/\/maps.googleapis.com\/maps\/api\/timezone\/.*/)
+      .with(headers: {"X-goog-api-key" => api_key})
       .to_return(status: 200, headers: {"Content-Type" => "application/json"}, body: '{"status":"OK","results":[]}')
   end
 
@@ -12,7 +13,8 @@ describe GoogleMapsService::Apis::TimeZone do
     it "should call Google Maps Web Service" do
       ts = 1331766000
       client.timezone([39.603481, -119.682251], timestamp: ts)
-      expect(a_request(:get, "https://maps.googleapis.com/maps/api/timezone/json?location=39.603481,-119.682251&timestamp=%d&key=%s" % [ts.to_i, api_key])).to have_been_made
+      expect(a_request(:get, "https://maps.googleapis.com/maps/api/timezone/json?location=39.603481,-119.682251&timestamp=%d" % ts.to_i)
+        .with(headers: {"X-goog-api-key" => api_key})).to have_been_made
     end
   end
 
@@ -23,7 +25,8 @@ describe GoogleMapsService::Apis::TimeZone do
 
     it "should call Google Maps Web Service" do
       client.timezone([39.603481, -119.682251])
-      expect(a_request(:get, "https://maps.googleapis.com/maps/api/timezone/json?location=39.603481,-119.682251&timestamp=%d&key=%s" % [1608, api_key])).to have_been_made
+      expect(a_request(:get, "https://maps.googleapis.com/maps/api/timezone/json?location=39.603481,-119.682251&timestamp=%d" % 1608)
+        .with(headers: {"X-goog-api-key" => api_key})).to have_been_made
     end
   end
 end

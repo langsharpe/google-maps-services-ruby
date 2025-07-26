@@ -5,6 +5,7 @@ describe GoogleMapsService::Apis::Places do
 
   before(:example) do
     stub_request(:get, /https:\/\/maps.googleapis.com\/maps\/api\/place\/.*/)
+      .with(headers: {"X-goog-api-key" => api_key})
       .to_return(status: 200, headers: {"Content-Type" => "application/json"}, body: '{"status":"OK","results":[]}')
   end
 
@@ -22,8 +23,8 @@ describe GoogleMapsService::Apis::Places do
 
       expect(a_request(:get, "https://maps.googleapis.com/maps/api/place/textsearch/json" \
         "?language=en-AU&location=-33.867460,151.207090&maxprice=4&minprice=1" +
-        "&opennow=true&query=restaurant&radius=100&type=liquor_store&key=%s" %
-        api_key)).to have_been_made
+        "&opennow=true&query=restaurant&radius=100&type=liquor_store")
+        .with(headers: {"X-goog-api-key" => api_key})).to have_been_made
     end
   end
 
@@ -36,8 +37,8 @@ describe GoogleMapsService::Apis::Places do
 
       expect(a_request(:get, "https://maps.googleapis.com/maps/api/place/nearbysearch/json" \
         "?keyword=foo&language=en-AU&location=-33.867460,151.207090&" +
-        "maxprice=4&minprice=1&name=bar&opennow=true&rankby=distance&type=liquor_store&key=%s" %
-        api_key)).to have_been_made
+        "maxprice=4&minprice=1&name=bar&opennow=true&rankby=distance&type=liquor_store")
+        .with(headers: {"X-goog-api-key" => api_key})).to have_been_made
     end
 
     context "when rank by distance is not paired with a keyword, name, or type" do
@@ -63,8 +64,8 @@ describe GoogleMapsService::Apis::Places do
       client.place("ChIJN1t_tDeuEmsRUsoyG83frY4", language: language)
 
       expect(a_request(:get, "https://maps.googleapis.com/maps/api/place/details/json" +
-        "?language=en-AU&placeid=ChIJN1t_tDeuEmsRUsoyG83frY4&key=%s" %
-        api_key)).to have_been_made
+        "?language=en-AU&placeid=ChIJN1t_tDeuEmsRUsoyG83frY4")
+        .with(headers: {"X-goog-api-key" => api_key})).to have_been_made
     end
   end
 
@@ -74,8 +75,8 @@ describe GoogleMapsService::Apis::Places do
       client.places_photo(ref, max_width: 100)
 
       expect(a_request(:get, "https://maps.googleapis.com/maps/api/place/photo" +
-        "?maxwidth=100&photoreference=%s" % ref +
-        "&key=%s" % api_key)).to have_been_made
+        "?maxwidth=100&photoreference=%s" % ref)
+        .with(headers: {"X-goog-api-key" => api_key})).to have_been_made
     end
 
     context "when no maxheight or maxwidth are supplied" do

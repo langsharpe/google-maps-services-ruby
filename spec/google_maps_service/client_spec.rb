@@ -85,7 +85,10 @@ describe GoogleMapsService::Client do
 
       it "should make request twice" do
         client.geocode("Sydney")
-        expect(a_request(:get, "https://maps.googleapis.com/maps/api/geocode/json?key=%s&address=Sydney" % api_key)).to have_been_made.times(2)
+        expect(
+          a_request(:get, "https://maps.googleapis.com/maps/api/geocode/json?address=Sydney")
+          .with(headers: {"X-goog-api-key" => api_key})
+        ).to have_been_made.times(2)
       end
     end
 
@@ -109,7 +112,10 @@ describe GoogleMapsService::Client do
 
       it "should make request twice" do
         client.geocode("Sydney")
-        expect(a_request(:get, "https://maps.googleapis.com/maps/api/geocode/json?key=%s&address=Sydney" % api_key)).to have_been_made.times(2)
+        expect(
+          a_request(:get, "https://maps.googleapis.com/maps/api/geocode/json?address=Sydney")
+          .with(headers: {"X-goog-api-key" => api_key})
+        ).to have_been_made.times(2)
       end
     end
 

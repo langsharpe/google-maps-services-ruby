@@ -6,13 +6,15 @@ describe GoogleMapsService::Apis::Roads do
   context "#snap_to_roads" do
     before(:example) do
       stub_request(:get, /https:\/\/roads.googleapis.com\/v1\/snapToRoads/)
+        .with(headers: {"X-goog-api-key" => api_key})
         .to_return(status: 200, headers: {"Content-Type" => "application/json"}, body: '{"snappedPoints":["foo"]}')
     end
 
     context "snap" do
       it "should call Google Maps Web Service" do
         client.snap_to_roads([40.714728, -73.998672])
-        expect(a_request(:get, "https://roads.googleapis.com/v1/snapToRoads?path=40.714728%%2C-73.998672&key=%s" % api_key)).to have_been_made
+        expect(a_request(:get, "https://roads.googleapis.com/v1/snapToRoads?path=40.714728%%2C-73.998672")
+          .with(headers: {"X-goog-api-key" => api_key})).to have_been_made
       end
     end
   end
@@ -20,13 +22,15 @@ describe GoogleMapsService::Apis::Roads do
   context "#nearest_roads" do
     before(:example) do
       stub_request(:get, /https:\/\/roads.googleapis.com\/v1\/nearestRoads/)
+        .with(headers: {"X-goog-api-key" => api_key})
         .to_return(status: 200, headers: {"Content-Type" => "application/json"}, body: '{"snappedPoints":["foo"]}')
     end
 
     context "single point" do
       it "should call Google Maps Web Service with single point" do
         client.nearest_roads([40.714728, -73.998672])
-        expect(a_request(:get, "https://roads.googleapis.com/v1/nearestRoads?points=40.714728%%2C-73.998672&key=%s" % api_key)).to have_been_made
+        expect(a_request(:get, "https://roads.googleapis.com/v1/nearestRoads?points=40.714728%%2C-73.998672")
+          .with(headers: {"X-goog-api-key" => api_key})).to have_been_made
       end
     end
   end
@@ -34,13 +38,15 @@ describe GoogleMapsService::Apis::Roads do
   context "#snapped_speed_limits" do
     before(:example) do
       stub_request(:get, /https:\/\/roads.googleapis.com\/v1\/speedLimits/)
+        .with(headers: {"X-goog-api-key" => api_key})
         .to_return(status: 200, headers: {"Content-Type" => "application/json"}, body: '{"speedLimits":["foo"]}')
     end
 
     context "path" do
       it "should call Google Maps Web Service" do
         client.snapped_speed_limits([[1, 2], [3, 4]])
-        expect(a_request(:get, "https://roads.googleapis.com/v1/speedLimits?path=1.000000%%2C2.000000|3.000000%%2C4.000000&key=%s" % api_key)).to have_been_made
+        expect(a_request(:get, "https://roads.googleapis.com/v1/speedLimits?path=1.000000%%2C2.000000|3.000000%%2C4.000000")
+          .with(headers: {"X-goog-api-key" => api_key})).to have_been_made
       end
     end
   end
@@ -48,20 +54,23 @@ describe GoogleMapsService::Apis::Roads do
   context "#speed_limits" do
     before(:example) do
       stub_request(:get, /https:\/\/roads.googleapis.com\/v1\/speedLimits/)
+        .with(headers: {"X-goog-api-key" => api_key})
         .to_return(status: 200, headers: {"Content-Type" => "application/json"}, body: '{"speedLimits":["foo"]}')
     end
 
     context "speedlimits" do
       it "should call Google Maps Web Service" do
         client.speed_limits("id1")
-        expect(a_request(:get, "https://roads.googleapis.com/v1/speedLimits?placeId=id1&key=%s" % api_key)).to have_been_made
+        expect(a_request(:get, "https://roads.googleapis.com/v1/speedLimits?placeId=id1")
+          .with(headers: {"X-goog-api-key" => api_key})).to have_been_made
       end
     end
 
     context "speedlimits multiple" do
       it "should call Google Maps Web Service" do
         client.speed_limits(["id1", "id2", "id3"])
-        expect(a_request(:get, "https://roads.googleapis.com/v1/speedLimits?placeId=id1&placeId=id2&placeId=id3&key=%s" % api_key)).to have_been_made
+        expect(a_request(:get, "https://roads.googleapis.com/v1/speedLimits?placeId=id1&placeId=id2&placeId=id3")
+          .with(headers: {"X-goog-api-key" => api_key})).to have_been_made
       end
     end
   end
@@ -82,13 +91,15 @@ describe GoogleMapsService::Apis::Roads do
   context "retriable with server error" do
     before(:example) do
       stub_request(:get, /https:\/\/roads.googleapis.com\/v1\/speedLimits.*/)
+        .with(headers: {"X-goog-api-key" => api_key})
         .to_return(status: 500, body: "Internal server error.").then
         .to_return(status: 200, headers: {"Content-Type" => "application/json"}, body: '{"speedLimits":[]}')
     end
 
     it "should make request twice" do
       client.speed_limits([])
-      expect(a_request(:get, "https://roads.googleapis.com/v1/speedLimits?key=%s" % api_key)).to have_been_made.times(2)
+      expect(a_request(:get, "https://roads.googleapis.com/v1/speedLimits?")
+        .with(headers: {"X-goog-api-key" => api_key})).to have_been_made.times(2)
     end
   end
 
@@ -106,6 +117,7 @@ describe GoogleMapsService::Apis::Roads do
     context "with invalid format" do
       before(:example) do
         stub_request(:get, /https:\/\/roads.googleapis.com\/v1\/speedLimits.*/)
+          .with(headers: {"X-goog-api-key" => api_key})
           .to_return(status: 200, body: "Unknown format.")
       end
 
@@ -117,6 +129,7 @@ describe GoogleMapsService::Apis::Roads do
     context "with invalid status code" do
       before(:example) do
         stub_request(:get, /https:\/\/roads.googleapis.com\/v1\/speedLimits.*/)
+          .with(headers: {"X-goog-api-key" => api_key})
           .to_return(status: 400, headers: {"Content-Type" => "application/json"}, body: '{"speedLimits":[]}')
       end
 
@@ -137,6 +150,7 @@ describe GoogleMapsService::Apis::Roads do
           }
         EOF
         stub_request(:get, /https:\/\/roads.googleapis.com\/v1\/speedLimits.*/)
+          .with(headers: {"X-goog-api-key" => api_key})
           .to_return(status: 400, body: json)
       end
 
@@ -157,6 +171,7 @@ describe GoogleMapsService::Apis::Roads do
           }
         EOF
         stub_request(:get, /https:\/\/roads.googleapis.com\/v1\/speedLimits.*/)
+          .with(headers: {"X-goog-api-key" => api_key})
           .to_return(status: 400, body: json)
       end
 
@@ -177,6 +192,7 @@ describe GoogleMapsService::Apis::Roads do
           }
         EOF
         stub_request(:get, /https:\/\/roads.googleapis.com\/v1\/speedLimits.*/)
+          .with(headers: {"X-goog-api-key" => api_key})
           .to_return(status: 403, body: json)
       end
 
@@ -197,6 +213,7 @@ describe GoogleMapsService::Apis::Roads do
           }
         EOF
         stub_request(:get, /https:\/\/roads.googleapis.com\/v1\/speedLimits.*/)
+          .with(headers: {"X-goog-api-key" => api_key})
           .to_return(status: 429, body: json)
       end
 
@@ -217,6 +234,7 @@ describe GoogleMapsService::Apis::Roads do
           }
         EOF
         stub_request(:get, /https:\/\/roads.googleapis.com\/v1\/speedLimits.*/)
+          .with(headers: {"X-goog-api-key" => api_key})
           .to_return(status: 400, body: json)
       end
 
@@ -236,6 +254,7 @@ describe GoogleMapsService::Apis::Roads do
           }
         EOF
         stub_request(:get, /https:\/\/roads.googleapis.com\/v1\/speedLimits.*/)
+          .with(headers: {"X-goog-api-key" => api_key})
           .to_return(status: 400, body: json)
       end
 

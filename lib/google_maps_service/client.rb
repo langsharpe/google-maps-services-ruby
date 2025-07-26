@@ -142,6 +142,7 @@ module GoogleMapsService
           request_query_ticket
           request = Net::HTTP::Get.new(url)
           request["User-Agent"] = user_agent
+          add_auth_header(request, accepts_client_id)
           response = Net::HTTP.start(url.hostname, url.port, use_ssl: url.scheme == "https") do |http|
             http.request(request)
           end
@@ -171,6 +172,7 @@ module GoogleMapsService
           request_query_ticket
           request = Net::HTTP::Post.new(url)
           request["User-Agent"] = user_agent
+          add_auth_header(request, accepts_client_id)
           request["X-Goog-FieldMask"] = field_mask if field_mask
           request["Content-Type"] = "application/json"
           request.body = MultiJson.dump(params)
@@ -204,6 +206,26 @@ module GoogleMapsService
       @qps_queue << Time.now if @qps_queue
     end
 
+    # Add authentication headers to the request.
+    #
+    # @param [Net::HTTPRequest] request The HTTP request object.
+    # @param [Boolean] accepts_client_id Sign the request using API {#keys} instead of {#client_id}.
+    #
+    # @return [void]
+    def add_auth_header(request, accepts_client_id)
+      if accepts_client_id && @client_id && @client_secret
+        # Client ID authentication doesn't use headers
+        return
+      end
+
+      if @key
+        request["X-goog-api-key"] = @key
+        return
+      end
+
+      raise ArgumentError, "Must provide API key for this API. It does not accept enterprise credentials."
+    end
+
     # Returns the path and query string portion of the request URL,
     # first adding any necessary parameters.
     #
@@ -229,9 +251,9 @@ module GoogleMapsService
         return path + "&signature=" + sig
       end
 
+      # For API key authentication, we now use headers instead of URL parameters
       if @key
-        params << ["key", @key]
-        return path + "?" + GoogleMapsService::Url.urlencode_params(params)
+        return params.empty? ? path : path + "?" + GoogleMapsService::Url.urlencode_params(params)
       end
 
       raise ArgumentError, "Must provide API key for this API. It does not accept enterprise credentials."

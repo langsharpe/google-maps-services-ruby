@@ -5,20 +5,23 @@ describe GoogleMapsService::Apis::Elevation do
 
   before(:example) do
     stub_request(:get, /https:\/\/maps.googleapis.com\/maps\/api\/elevation\/.*/)
+      .with(headers: {"X-goog-api-key" => api_key})
       .to_return(status: 200, headers: {"Content-Type" => "application/json"}, body: '{"status":"OK","results":[]}')
   end
 
   context "elevation single" do
     it "should call Google Maps Web Service" do
       client.elevation([40.714728, -73.998672])
-      expect(a_request(:get, "https://maps.googleapis.com/maps/api/elevation/json?locations=40.714728%%2C-73.998672&key=%s" % api_key)).to have_been_made
+      expect(a_request(:get, "https://maps.googleapis.com/maps/api/elevation/json?locations=40.714728%%2C-73.998672")
+        .with(headers: {"X-goog-api-key" => api_key})).to have_been_made
     end
   end
 
   context "elevation single list" do
     it "should call Google Maps Web Service" do
       client.elevation([[40.714728, -73.998672]])
-      expect(a_request(:get, "https://maps.googleapis.com/maps/api/elevation/json?locations=40.714728%%2C-73.998672&key=%s" % api_key)).to have_been_made
+      expect(a_request(:get, "https://maps.googleapis.com/maps/api/elevation/json?locations=40.714728%%2C-73.998672")
+        .with(headers: {"X-goog-api-key" => api_key})).to have_been_made
     end
   end
 
@@ -26,7 +29,8 @@ describe GoogleMapsService::Apis::Elevation do
     it "should call Google Maps Web Service" do
       locations = [[40.714728, -73.998672], [-34.397, 150.644]]
       client.elevation(locations)
-      expect(a_request(:get, "https://maps.googleapis.com/maps/api/elevation/json?locations=40.714728%%2C-73.998672%%7C-34.397000%%2C150.644000&key=%s" % api_key)).to have_been_made
+      expect(a_request(:get, "https://maps.googleapis.com/maps/api/elevation/json?locations=40.714728%%2C-73.998672%%7C-34.397000%%2C150.644000")
+        .with(headers: {"X-goog-api-key" => api_key})).to have_been_made
     end
   end
 
@@ -34,6 +38,7 @@ describe GoogleMapsService::Apis::Elevation do
     context "with single point" do
       before(:example) do
         stub_request(:get, /https:\/\/maps.googleapis.com\/maps\/api\/elevation\/.*/)
+          .with(headers: {"X-goog-api-key" => api_key})
           .to_return(status: 200, headers: {"Content-Type" => "application/json"}, body: '{"results": [], "status": "INVALID_REQUEST"}')
       end
 
@@ -47,7 +52,8 @@ describe GoogleMapsService::Apis::Elevation do
         path = [[40.714728, -73.998672], [-34.397, 150.644]]
 
         client.elevation_along_path(path, 5)
-        expect(a_request(:get, "https://maps.googleapis.com/maps/api/elevation/json?path=40.714728%%2C-73.998672%%7C-34.397000%%2C150.644000&key=%s&samples=5" % api_key)).to have_been_made
+        expect(a_request(:get, "https://maps.googleapis.com/maps/api/elevation/json?path=40.714728%%2C-73.998672%%7C-34.397000%%2C150.644000&samples=5")
+          .with(headers: {"X-goog-api-key" => api_key})).to have_been_made
       end
     end
 
@@ -56,7 +62,8 @@ describe GoogleMapsService::Apis::Elevation do
         path = "gfo}EtohhUxD@bAxJmGF"
 
         client.elevation_along_path(path, 5)
-        expect(a_request(:get, "https://maps.googleapis.com/maps/api/elevation/json?path=enc:gfo}EtohhUxD@bAxJmGF&key=%s&samples=5" % api_key)).to have_been_made
+        expect(a_request(:get, "https://maps.googleapis.com/maps/api/elevation/json?path=enc:gfo}EtohhUxD@bAxJmGF&samples=5")
+          .with(headers: {"X-goog-api-key" => api_key})).to have_been_made
       end
     end
   end

@@ -5,6 +5,7 @@ describe GoogleMapsService::Apis::Directions do
 
   before(:example) do
     stub_request(:get, /https:\/\/maps.googleapis.com\/maps\/api\/directions\/.*/)
+      .with(headers: {"X-goog-api-key" => api_key})
       .to_return(status: 200, headers: {"Content-Type" => "application/json"}, body: '{"status":"OK","results":[]}')
   end
 
@@ -12,8 +13,8 @@ describe GoogleMapsService::Apis::Directions do
     it "should call Google Maps Web Service" do
       # Simplest directions request. Driving directions by default.
       client.directions("Sydney", "Melbourne")
-      expect(a_request(:get, "https://maps.googleapis.com/maps/api/directions/json?origin=Sydney&destination=Melbourne&key=%s" %
-                          api_key)).to have_been_made
+      expect(a_request(:get, "https://maps.googleapis.com/maps/api/directions/json?origin=Sydney&destination=Melbourne")
+        .with(headers: {"X-goog-api-key" => api_key})).to have_been_made
     end
   end
 
@@ -24,8 +25,8 @@ describe GoogleMapsService::Apis::Directions do
         avoid: ["highways", "tolls", "ferries"],
         units: "metric",
         region: "au")
-      expect(a_request(:get, "https://maps.googleapis.com/maps/api/directions/json?origin=Sydney&avoid=highways%%7Ctolls%%7Cferries&destination=Melbourne&mode=bicycling&key=%s&units=metric&region=au" %
-                          api_key)).to have_been_made
+      expect(a_request(:get, "https://maps.googleapis.com/maps/api/directions/json?origin=Sydney&avoid=highways%%7Ctolls%%7Cferries&destination=Melbourne&mode=bicycling&units=metric&region=au")
+        .with(headers: {"X-goog-api-key" => api_key})).to have_been_made
     end
   end
 
@@ -35,8 +36,8 @@ describe GoogleMapsService::Apis::Directions do
       client.directions("Sydney Town Hall", "Parramatta, NSW",
         mode: "transit",
         departure_time: now)
-      expect(a_request(:get, "https://maps.googleapis.com/maps/api/directions/json?origin=Sydney+Town+Hall&key=%s&destination=Parramatta%%2C+NSW&mode=transit&departure_time=%d" %
-                          [api_key, now.to_i])).to have_been_made
+      expect(a_request(:get, "https://maps.googleapis.com/maps/api/directions/json?origin=Sydney+Town+Hall&destination=Parramatta%%2C+NSW&mode=transit&departure_time=%d" % now.to_i)
+        .with(headers: {"X-goog-api-key" => api_key})).to have_been_made
     end
   end
 
@@ -46,8 +47,8 @@ describe GoogleMapsService::Apis::Directions do
       client.directions("Sydney Town Hall", "Parramatta, NSW",
         mode: "transit",
         arrival_time: an_hour_before_now)
-      expect(a_request(:get, "https://maps.googleapis.com/maps/api/directions/json?origin=Sydney+Town+Hall&arrival_time=%d&destination=Parramatta%%2C+NSW&mode=transit&key=%s" %
-                          [an_hour_before_now.to_i, api_key])).to have_been_made
+      expect(a_request(:get, "https://maps.googleapis.com/maps/api/directions/json?origin=Sydney+Town+Hall&arrival_time=%d&destination=Parramatta%%2C+NSW&mode=transit" % an_hour_before_now.to_i)
+        .with(headers: {"X-goog-api-key" => api_key})).to have_been_made
     end
   end
 
@@ -77,7 +78,8 @@ describe GoogleMapsService::Apis::Directions do
     it "should call Google Maps Web Service" do
       client.directions("Town Hall, Sydney", "Parramatta, NSW",
         mode: "bicycling")
-      expect(a_request(:get, "https://maps.googleapis.com/maps/api/directions/json?origin=Town+Hall%%2C+Sydney&destination=Parramatta%%2C+NSW&mode=bicycling&key=%s" % api_key)).to have_been_made
+      expect(a_request(:get, "https://maps.googleapis.com/maps/api/directions/json?origin=Town+Hall%%2C+Sydney&destination=Parramatta%%2C+NSW&mode=bicycling")
+        .with(headers: {"X-goog-api-key" => api_key})).to have_been_made
     end
   end
 
@@ -87,7 +89,8 @@ describe GoogleMapsService::Apis::Directions do
       client.directions("Brooklyn", "Queens",
         mode: "transit",
         departure_time: now)
-      expect(a_request(:get, "https://maps.googleapis.com/maps/api/directions/json?origin=Brooklyn&key=%s&destination=Queens&mode=transit&departure_time=%d" % [api_key, now.to_i])).to have_been_made
+      expect(a_request(:get, "https://maps.googleapis.com/maps/api/directions/json?origin=Brooklyn&destination=Queens&mode=transit&departure_time=%d" % now.to_i)
+        .with(headers: {"X-goog-api-key" => api_key})).to have_been_made
     end
   end
 
@@ -95,7 +98,8 @@ describe GoogleMapsService::Apis::Directions do
     it "should call Google Maps Web Service" do
       client.directions("Boston, MA", "Concord, MA",
         waypoints: ["Charlestown, MA", "Lexington, MA"])
-      expect(a_request(:get, "https://maps.googleapis.com/maps/api/directions/json?origin=Boston%%2C+MA&destination=Concord%%2C+MA&waypoints=Charlestown%%2C+MA%%7CLexington%%2C+MA&key=%s" % api_key)).to have_been_made
+      expect(a_request(:get, "https://maps.googleapis.com/maps/api/directions/json?origin=Boston%%2C+MA&destination=Concord%%2C+MA&waypoints=Charlestown%%2C+MA%%7CLexington%%2C+MA")
+        .with(headers: {"X-goog-api-key" => api_key})).to have_been_made
     end
   end
 
@@ -107,7 +111,8 @@ describe GoogleMapsService::Apis::Directions do
           "Connawarra, SA",
           "McLaren Vale, SA"],
         optimize_waypoints: true)
-      expect(a_request(:get, "https://maps.googleapis.com/maps/api/directions/json?origin=Adelaide%%2C+SA&destination=Adelaide%%2C+SA&waypoints=optimize%%3Atrue%%7CBarossa+Valley%%2C+SA%%7CClare%%2C+SA%%7CConnawarra%%2C+SA%%7CMcLaren+Vale%%2C+SA&key=%s" % api_key)).to have_been_made
+      expect(a_request(:get, "https://maps.googleapis.com/maps/api/directions/json?origin=Adelaide%%2C+SA&destination=Adelaide%%2C+SA&waypoints=optimize%%3Atrue%%7CBarossa+Valley%%2C+SA%%7CClare%%2C+SA%%7CConnawarra%%2C+SA%%7CMcLaren+Vale%%2C+SA")
+        .with(headers: {"X-goog-api-key" => api_key})).to have_been_made
     end
   end
 
@@ -115,14 +120,15 @@ describe GoogleMapsService::Apis::Directions do
     it "should call Google Maps Web Service" do
       client.directions("Toledo", "Madrid",
         region: "es")
-      expect(a_request(:get, "https://maps.googleapis.com/maps/api/directions/json?origin=Toledo&region=es&destination=Madrid&key=%s" %
-                          api_key)).to have_been_made
+      expect(a_request(:get, "https://maps.googleapis.com/maps/api/directions/json?origin=Toledo&region=es&destination=Madrid")
+        .with(headers: {"X-goog-api-key" => api_key})).to have_been_made
     end
   end
 
   context "zero results returns response" do
     before(:example) do
       stub_request(:get, /https:\/\/maps.googleapis.com\/maps\/api\/directions\/.*/)
+        .with(headers: {"X-goog-api-key" => api_key})
         .to_return(status: 200, headers: {"Content-Type" => "application/json"}, body: '{"status":"ZERO_RESULTS","routes":[]}')
     end
 
@@ -135,6 +141,7 @@ describe GoogleMapsService::Apis::Directions do
   context "can return full response" do
     before(:example) do
       stub_request(:get, /https:\/\/maps.googleapis.com\/maps\/api\/directions\/.*/)
+        .with(headers: {"X-goog-api-key" => api_key})
         .to_return(status: 200, headers: {"Content-Type" => "application/json"}, body: '{"status":"OK","routes":[]}')
     end
 
@@ -149,7 +156,8 @@ describe GoogleMapsService::Apis::Directions do
       client.directions("Toledo", "Madrid",
         region: "es",
         language: "es")
-      expect(a_request(:get, "https://maps.googleapis.com/maps/api/directions/json?origin=Toledo&region=es&destination=Madrid&key=%s&language=es" % api_key)).to have_been_made
+      expect(a_request(:get, "https://maps.googleapis.com/maps/api/directions/json?origin=Toledo&region=es&destination=Madrid&language=es")
+        .with(headers: {"X-goog-api-key" => api_key})).to have_been_made
     end
   end
 
@@ -157,7 +165,8 @@ describe GoogleMapsService::Apis::Directions do
     it "should call Google Maps Web Service" do
       client.directions("Sydney Town Hall", "Parramatta Town Hall",
         alternatives: true)
-      expect(a_request(:get, "https://maps.googleapis.com/maps/api/directions/json?origin=Sydney+Town+Hall&destination=Parramatta+Town+Hall&alternatives=true&key=%s" % api_key)).to have_been_made
+      expect(a_request(:get, "https://maps.googleapis.com/maps/api/directions/json?origin=Sydney+Town+Hall&destination=Parramatta+Town+Hall&alternatives=true")
+        .with(headers: {"X-goog-api-key" => api_key})).to have_been_made
     end
   end
 end
