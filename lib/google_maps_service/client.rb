@@ -1,6 +1,5 @@
 require "multi_json"
 require "net/http"
-require "retriable"
 require "google_maps_service/errors"
 require "google_maps_service/convert"
 require "google_maps_service/url"
@@ -101,6 +100,45 @@ module GoogleMapsService
 
     protected
 
+    # Retry a block of code with exponential backoff on specific errors.
+    #
+    # @param [Integer] timeout Maximum time in seconds to retry (nil for no timeout).
+    # @param [Array<Class>] on Array of error classes to retry on.
+    # @yield Block to retry.
+    #
+    # @return [Object] Result of the block.
+    def with_retry(timeout: nil, on: [])
+      start_time = Time.now
+      attempt = 0
+      base_delay = 0.5
+      max_delay = 60
+
+      loop do
+        begin
+          return yield
+        rescue *on => e
+          attempt += 1
+          elapsed = Time.now - start_time
+
+          if timeout && elapsed >= timeout
+            raise e
+          end
+
+          # Exponential backoff: 0.5, 0.75, 1.125, 1.6875, ...
+          delay = [base_delay * (1.5**(attempt - 1)), max_delay].min
+
+          # Don't sleep longer than the remaining timeout
+          if timeout
+            remaining = timeout - elapsed
+            delay = [delay, remaining].min
+            raise e if delay <= 0
+          end
+
+          sleep delay
+        end
+      end
+    end
+
     # Initialize QPS queue. QPS queue is a "tickets" for calling API
     def initialize_query_tickets
       if @queries_per_second
@@ -137,7 +175,7 @@ module GoogleMapsService
     def get(path, params, base_url: DEFAULT_BASE_URL, accepts_client_id: true, custom_response_decoder: nil)
       url = URI(base_url + generate_auth_url(path, params, accepts_client_id))
 
-      Retriable.retriable timeout: @retry_timeout, on: RETRIABLE_ERRORS do |try|
+      with_retry(timeout: @retry_timeout, on: RETRIABLE_ERRORS) do
         begin
           request_query_ticket
           request = Net::HTTP::Get.new(url)
@@ -166,7 +204,7 @@ module GoogleMapsService
     def post(path, params, base_url: DEFAULT_BASE_URL, accepts_client_id: true, custom_response_decoder: nil, field_mask: nil)
       url = URI(base_url + generate_auth_url(path, {}, accepts_client_id))
 
-      Retriable.retriable timeout: @retry_timeout, on: RETRIABLE_ERRORS do |try|
+      with_retry(timeout: @retry_timeout, on: RETRIABLE_ERRORS) do
         begin
           request_query_ticket
           request = Net::HTTP::Post.new(url)
